@@ -14,8 +14,8 @@ Application frontend du projet **EduAdvice**, développée avec React et Vite.
 
 Avant de commencer, assurez-vous d'avoir installé :
 
-- Node.js (version 20.19 ou supérieure).
-- npm.
+- Node.js 24 LTS (version 24.x).
+- npm (fourni avec Node.js).
 
 Vérifier les versions installées :
 
@@ -122,7 +122,7 @@ frontend/
 
 ---
 
-*EduAdvice — Projet universitaire de Master Informatique.*
+*EduAdvice — Projet universitaire de Master P2S.*
 
 
 

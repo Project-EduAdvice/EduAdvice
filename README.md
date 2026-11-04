@@ -1,3 +1,10 @@
+![React](https://img.shields.io/badge/React-19.3.1-61DAFB?logo=react&logoColor=black)
+![Vite](https://img.shields.io/badge/Vite-8.3.5-646CFF?logo=vite&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-20.20.2-339933?logo=node.js&logoColor=white)
+![npm](https://img.shields.io/badge/npm-10.8.2-CB3837?logo=npm&logoColor=white)
+![Oxlint](https://img.shields.io/badge/Oxlint-1.91.0-orange)
+
+
 # EduAdvice
 
 **Plateforme web de centralisation des informations sur les formations universitaires.**

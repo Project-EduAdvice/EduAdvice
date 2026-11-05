@@ -23,7 +23,16 @@ Vérifier les versions installées :
 node -v
 npm -v
 ```
+## Utiliser la même version de Node.js
 
+Le fichier .nvmrc, situé à la racine du dossier frontend/, définit la version de Node.js utilisée par le projet.
+
+Pour installer et activer automatiquement cette version avec NVM, exécuter depuis le dossier frontend/ :
+
+```bash
+nvm install
+nvm use
+```
 ## Installation
 
 Depuis la racine du dépôt EduAdvice, accéder au dossier frontend :

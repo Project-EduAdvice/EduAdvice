@@ -28,10 +28,8 @@ Les principaux cas d'utilisation correspondent aux fonctionnalités définies da
 
 Le diagramme UML de cas d'utilisation est présenté ci-dessous.
 
-<!-- Ajouter ici le diagramme UML réalisé par l'équipe. -->
-<!--
-![Diagramme de cas d'utilisation](/EduAdvice%20MVP%20Use-Case%20Diagram.pnge)
--->
+![Diagramme des cas d’utilisation](EduAdvice%20MVP%20Use-Case%20Diagram.png)
+
 ## 5. Correspondance avec les besoins fonctionnels
 
 Les cas d'utilisation UC-01 à UC-06 correspondent respectivement aux besoins fonctionnels BF-01 à BF-06 définis dans le document `requirements.md`.

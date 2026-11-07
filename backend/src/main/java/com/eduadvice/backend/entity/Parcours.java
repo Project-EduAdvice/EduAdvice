@@ -31,6 +31,18 @@ public class Parcours {
 
     @Column(columnDefinition ="TEXT")
     private String description;
+    
+    public Parcours() {
+    }
+
+    public Parcours(String name, String level, String diploma, String mention, String establishment, String description) {
+        this.name = name;
+        this.level = level;
+        this.diploma = diploma;
+        this.mention = mention;
+        this.establishment = establishment;
+        this.description = description;
+    }
 
     public Long getId() {
         return id;

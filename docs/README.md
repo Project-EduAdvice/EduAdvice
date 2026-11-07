@@ -11,7 +11,7 @@
 
 ## Base de données
 - [Conception de la base de données](database/database-design.md)
-- [Modèle DBML](database/eduadvice.dbml)
+- [Schéma formelle de la base de données](database/diagrams/eduadvice.sql)
 
 ## API
 - [Contrat API](api/api-contract.md)

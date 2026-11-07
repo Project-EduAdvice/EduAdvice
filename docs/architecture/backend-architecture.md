@@ -90,17 +90,13 @@ Hibernate sera utilisé comme implémentation JPA pour le mapping objet-relation
 Les entités représentent les objets persistés dans PostgreSQL.
 
 Elles correspondent aux principales structures du modèle de données, notamment :
-- Establishment
-- Diploma
-- Mention
+
 - Parcours
-- AcademicLevel
 - Semester
 - TeachingUnit
 - Subject
 - LearningResource
 - CareerOpportunity
-- Skill
 
 Les relations entre les entités devront respecter le modèle relationnel défini pour le projet.
 

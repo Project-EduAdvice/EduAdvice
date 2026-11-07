@@ -31,7 +31,7 @@ public class Parcours {
 
     @Column(columnDefinition ="TEXT")
     private String description;
-    
+
     public Parcours() {
     }
 

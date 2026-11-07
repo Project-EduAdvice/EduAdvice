@@ -1,4 +1,4 @@
-package com.eduadvice.backend.Entity;
+package com.eduadvice.backend.entity;
 
 import jakarta.persistence.*;
 /**

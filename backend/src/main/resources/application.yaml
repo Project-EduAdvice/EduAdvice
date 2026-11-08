@@ -4,7 +4,7 @@ spring:
 
   datasource:
     url: ${DB_URL:jdbc:postgresql://localhost:5432/eduadvice}
-    username: ${DB_USERNAME:eduadvice_app}
+    username: ${DB_USERNAME:eduadvice_user}
     password: ${DB_PASSWORD}
 
   jpa:

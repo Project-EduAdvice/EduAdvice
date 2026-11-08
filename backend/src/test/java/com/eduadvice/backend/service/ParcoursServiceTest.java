@@ -10,7 +10,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,11 +50,7 @@ class ParcoursServiceTest {
 
     @Test
     void getAllParcours_shouldReturnParcours_whenExists() {
-        List<Parcours> parcoursList = new ArrayList<>();
-        parcoursList.add(parcours1);
-        parcoursList.add(parcours2);
-
-        when(parcoursRepository.findAll()).thenReturn(parcoursList);
+        when(parcoursRepository.findAll()).thenReturn(List.of(parcours1, parcours2));
 
         List<Parcours> result = parcoursService.getAllParcours();
 

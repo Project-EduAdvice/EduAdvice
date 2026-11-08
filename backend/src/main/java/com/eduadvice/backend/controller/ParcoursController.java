@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/parcours")
+@RequestMapping({"/api/parcours", "/api/parcours/"})
 public class ParcoursController {
     @Autowired
     ParcoursService parcoursService;
@@ -25,12 +25,9 @@ public class ParcoursController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Parcours> getParcours(@PathVariable Long id){
-        Optional<Parcours> parcours = parcoursService.getParcoursById(id);
 
-        if(parcours.isEmpty()){
-            return ResponseEntity.notFound().build();
-        }
+        Parcours parcours = parcoursService.getParcoursById(id);
 
-        return ResponseEntity.ok(parcours.get());
+        return ResponseEntity.ok(parcours);
     }
 }

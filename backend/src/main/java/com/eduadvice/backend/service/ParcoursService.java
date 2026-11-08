@@ -1,6 +1,7 @@
 package com.eduadvice.backend.service;
 
 import com.eduadvice.backend.entity.Parcours;
+import com.eduadvice.backend.exception.RessourceNotFoundException;
 import com.eduadvice.backend.repository.ParcoursRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,14 @@ public class ParcoursService {
         return parcoursRepository.findAll();
     }
 
-    public Optional<Parcours> getParcoursById(Long id){
-        return parcoursRepository.findById(id);
+    public Parcours getParcoursById(Long id){
+
+        Optional<Parcours> parcours = parcoursRepository.findById(id);
+
+        if(parcours.isEmpty()) {
+            throw new RessourceNotFoundException(" Le parcours avec l'identifiant " + id + " n'existe pas.");
+        }
+
+        return parcours.get();
     }
 }

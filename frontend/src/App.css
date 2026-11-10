@@ -2,16 +2,26 @@
   --bg: #293358;
   --surface: #354878;
   --border: #4a5f99;
-  --text: #ffffff;
-  --accent: #ad947e;
-  --on-accent: #ffffff;
+  --text: #ad947e;
+  --accent: #8b7d6d;
+  --gutter: 5.5%;
   --radius: 14px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
 }
 
 #root {
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
   width: 100%;
   max-width: none;
   margin: 0;
@@ -19,101 +29,214 @@
   text-align: left;
 }
 
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button,
+input {
+  font-family: inherit;
+}
+
+/* Footer toujours en bas */
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
 main {
   flex: 1;
 }
 
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: system-ui, sans-serif;
-  line-height: 1.6;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
+/* CONTAINER : aligné à gauche, même marge que la navbar */
 
 .container {
-  width: 90%;
-  margin-inline: auto;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding-inline: var(--gutter);
 }
 
-/* login button*/
+/* NAVBAR : discrète */
+
 .navbar {
-  padding: 1.5rem 2rem;
-}
-
-.navbar__inner {
+  height: 52px;
+  padding: 0 var(--gutter);
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: space-between;
+  background: transparent;
+  border-bottom: 1px solid rgba(74, 95, 153, 0.35);
 }
 
-.btn {
-  display: inline-block;
-  padding: 0.6rem 1.4rem;
-  border-radius: 999px;
-  background: var(--accent);
-  color: var(--on-accent);
+.logo {
+  color: var(--text);
+  font-size: 18px;
+  font-weight: 700;
+  opacity: 0.9;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.nav-links a {
+  font-size: 13px;
   font-weight: 500;
+  opacity: 0.7;
+  transition: opacity 0.2s, color 0.2s;
 }
 
-.btn:hover {
-  opacity: 0.88;
+.nav-links a:hover {
+  opacity: 1;
+  color: var(--accent);
 }
 
+/* CORPS : 25% vide / [EduAdvice + Choice] / 25% vide */
 
-/* EduAdvice section */
-.EduAdvice {
-  padding: 4rem 0;
+main.container {
+  padding-block: 25vh;
   text-align: left;
 }
 
-.EduAdvice h1 {
-  margin: 0 0 1rem;
-  font-size: clamp(2.6rem, 7vw, 4.2rem);
-  line-height: 1.1;
+/* HERO */
+
+.hero {
+  padding: 0;
 }
 
-.EduAdvice p{
-  max-width: 34rem;
-  margin: 0;
-  font-size: 1.15rem;
+.hero h1 {
+  font-size: clamp(38px, 4.5vw, 62px);
+  line-height: 1.12;
+  letter-spacing: -2.5px;
+  color: var(--text);
+  font-weight: 800;
 }
 
-
-/*Choix*/
-.themes {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.25rem;
-  padding-bottom: 5rem;
+.hero p {
+  font-size: 20px;
+  line-height: 1.6;
+  color: var(--text);
+  margin-top: 25px;
 }
 
-.choix {
-  padding: 3rem 1.5rem;
-  background: var(--surface);
+/* SEARCH */
+
+.search-bar {
+  margin-top: 48px;
+  width: 88%;
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 8px 8px 8px 25px;
   border: 1px solid var(--border);
-  border-radius: var(--radius);
-  text-align: center;
+  border-radius: 50px;
+  background: var(--surface);
+  color: var(--text);
 }
 
-.choix h3 {
-  margin: 0;
-  font-size: 1.4rem;
+.search-bar input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 16px;
+  color: var(--text);
 }
 
+.search-bar input::placeholder {
+  color: var(--accent);
+}
+
+.search-bar button {
+  border: none;
+  background: var(--accent);
+  color: var(--bg);
+  padding: 17px 25px;
+  border-radius: 35px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.search-bar button:hover {
+  opacity: 0.85;
+}
+
+/* CHOICE : deux cartes avec bordures */
+
+.choice-grid {
+  margin-top: 50px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 25px;
+  justify-items: stretch;
+}
+
+.choice-card {
+  min-height: 160px;
+  padding: 25px 30px;
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  background: transparent;
+  border: 2px solid var(--accent);
+  border-radius: 25px;
+  transition: transform 0.2s, background 0.2s;
+}
+
+.choice-card:hover {
+  transform: translateY(-4px);
+  background: var(--surface);
+}
+
+.choice-icon {
+  width: 95px;
+  height: 95px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.choice-content {
+  flex: 1;
+}
+
+.choice-content h2 {
+  font-size: 26px;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+.choice-content p {
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.choice-arrow {
+  flex-shrink: 0;
+  color: var(--accent);
+}
+
+/* FOOTER */
 
 .footer {
   padding: 3rem 0 2rem;
   background: var(--surface);
   border-top: 1px solid var(--border);
+  color: var(--text);
 }
 
 .footer__title {
@@ -127,8 +250,6 @@ a {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1.5rem;
-  margin: 0;
-  padding: 0;
   list-style: none;
 }
 
@@ -139,14 +260,80 @@ a {
 
 .team span {
   font-size: 0.85rem;
-  opacity: 0.8;
+  color: var(--accent);
 }
 
-/* ---------- Mobile ---------- */
-@media (max-width: 700px) {
-  .themes {
+/* RESPONSIVE */
+
+@media (max-width: 900px) {
+  .search-bar {
+    width: 100%;
+  }
+
+  .choice-grid {
     grid-template-columns: 1fr;
   }
+
+  main.container {
+    padding-block: 12vh;
+  }
+}
+
+@media (max-width: 600px) {
+  .navbar {
+    padding: 0 5%;
+  }
+
+  .nav-links {
+    gap: 16px;
+  }
+
+  .hero h1 {
+    font-size: 39px;
+    letter-spacing: -1.5px;
+  }
+
+  .hero p {
+    font-size: 16px;
+  }
+
+  .search-bar {
+    min-height: 60px;
+    gap: 10px;
+    padding-left: 15px;
+  }
+
+  .search-bar input {
+    font-size: 13px;
+  }
+
+  .search-bar button {
+    padding: 13px;
+    font-size: 12px;
+  }
+
+  .choice-card {
+    padding: 20px;
+    gap: 15px;
+  }
+
+  .choice-icon {
+    width: 65px;
+    height: 65px;
+  }
+
+  .choice-icon svg {
+    width: 35px;
+  }
+
+  .choice-content h2 {
+    font-size: 21px;
+  }
+
+  .choice-content p {
+    font-size: 13px;
+  }
+
   .team {
     grid-template-columns: repeat(2, 1fr);
   }

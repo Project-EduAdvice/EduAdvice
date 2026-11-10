@@ -1,3 +1,10 @@
+import { useState } from "react";
+
+import Navbar from "./components/Navbar";
+import EduAdvice from "./components/EduAdvice";
+import Choice from "./components/Choice";
+import Footer from "./components/Footer";
+
 import "./App.css";
 
 const TEAM = [
@@ -7,84 +14,23 @@ const TEAM = [
   {name: "Nom4", role: "Role 4"},
 ];
 
-
-const THEMES = [
-  {title:"Licence"},
-  {title:"Master"},
-  {title:"Debouches"},
-];
-
-function Nav(){
+function App() {
   return (
-    <header className="navbar">
-      <div className="container navbar__inner">
-        <nav>
-          <a href="/login" className="btn">Se connecter</a>
-        </nav>
-      </div>
-    </header>
-  );
-}
+    <div className="app">
 
-function EduAdvice(){
-  return(
-    <section className="container EduAdvice">
-      <h1>EduAdvice</h1>
-      <p>
-        [A MODIFIER]
-      </p>
-      <p>
-        [Presentation EduAdvice]
-      </p>
-      <p>
-        [Informatique en generale]
-      </p>
-      <p>
-        [Informatique a l'USPN selon :]
-      </p>
-    </section>
-  );
-}
+      <Navbar />
 
-function Choix() {
-  return (
-    <section className="container themes">
-      {THEMES.map((t) => (
-        <div key={t.title} className="choix">
-          <h3>{t.title}</h3>
-        </div>
-      ))}
-    </section>
-  );
-}
+      <main className="container">
 
-function Footer(){
-  return (
-    <footer id="team" className="footer">
-      <div className="container">
-        <p className="footer__title"> Realise par :</p>
-        <ul className="team">
-          {TEAM.map((m, i) => (
-            <li key={i}>
-              <strong>{m.name}</strong>
-              <span>{m.role}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </footer>
-  );
-}
+        <EduAdvice onSearch={() => {}} />
 
-export default function App(){
-  return (
-    <>
-      <Nav/>
-      <main>
-        <EduAdvice/>
-        <Choix/>
+        <Choice />
       </main>
+        
       <Footer/>
-    </>
+  
+    </div>
   );
-};
+}
+
+export default App;

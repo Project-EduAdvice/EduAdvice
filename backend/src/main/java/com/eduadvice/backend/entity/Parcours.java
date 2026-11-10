@@ -1,6 +1,10 @@
 package com.eduadvice.backend.entity;
 
 import jakarta.persistence.*;
+
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Configuration class responsible for Hibernate database schema generation.
  * This class configures Hibernate to automatically create or update tables
@@ -32,6 +36,14 @@ public class Parcours {
     @Column(columnDefinition ="TEXT")
     private String description;
 
+    @ManyToMany
+    @JoinTable(
+            name = "parcours_careerOpportunities",
+            joinColumns = @JoinColumn(name = "parcours_id"),
+            inverseJoinColumns = @JoinColumn(name = "careerOpportunities_id")
+    )
+    private Set<CareerOpportunity> careerOpportunities = new HashSet<>();
+
     public Parcours() {
     }
 
@@ -42,6 +54,17 @@ public class Parcours {
         this.mention = mention;
         this.establishment = establishment;
         this.description = description;
+    }
+
+    // Helper methods for Career Opportunity
+    public void addCareerOpportunity(CareerOpportunity opportunity){
+        careerOpportunities.add(opportunity);
+        opportunity.getParcours().add(this);
+    }
+
+    public void removeCareerOpportunity(CareerOpportunity opportunity){
+        careerOpportunities.remove(opportunity);
+        opportunity.getParcours().remove(this);
     }
 
     public Long getId() {
@@ -70,5 +93,9 @@ public class Parcours {
 
     public String getDescription() {
         return description;
+    }
+
+    public Set<CareerOpportunity> getCareerOpportunities() {
+        return careerOpportunities;
     }
 }

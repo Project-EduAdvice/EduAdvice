@@ -1,5 +1,6 @@
 package com.eduadvice.backend.controller;
 
+import com.eduadvice.backend.dto.ParcoursResponseDTO;
 import com.eduadvice.backend.entity.Parcours;
 import com.eduadvice.backend.service.ParcoursService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,15 +19,12 @@ public class ParcoursController {
     ParcoursService parcoursService;
 
     @GetMapping
-    public List<Parcours> getAllParcours(){
-        return parcoursService.getAllParcours();
+    public ResponseEntity<List<ParcoursResponseDTO>> getAllParcours(){
+        return ResponseEntity.ok(parcoursService.getAllParcours());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Parcours> getParcours(@PathVariable Long id){
-
-        Parcours parcours = parcoursService.getParcoursById(id);
-
-        return ResponseEntity.ok(parcours);
+    public ResponseEntity<ParcoursResponseDTO> getParcours(@PathVariable Long id){
+        return ResponseEntity.ok(parcoursService.getParcoursById(id));
     }
 }

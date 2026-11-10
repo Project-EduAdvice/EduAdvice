@@ -1,133 +1,148 @@
-CREATE TABLE "establishments" (
-  "id" integer PRIMARY KEY,
-  "name" varchar(150) NOT NULL,
-  "city" varchar(100),
-  "website" varchar(255)
+-- ==========================================
+-- 1. REPRESENTATION FORMEL DU SCHEMA DE LA DATABASE
+-- ==========================================
+
+-- ==========================================
+-- 1. PARCOURS
+-- ==========================================
+
+CREATE TABLE parcours (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    level VARCHAR(100) NOT NULL,
+    diploma VARCHAR(100) NOT NULL,
+    mention VARCHAR(150),
+    establishment VARCHAR(255) NOT NULL,
+    description TEXT
 );
 
-CREATE TABLE "diplomas" (
-  "id" integer PRIMARY KEY,
-  "establishment_id" integer NOT NULL,
-  "name" varchar(150) NOT NULL,
-  "level" varchar(50)
+
+-- ==========================================
+-- 2. SEMESTERS
+-- ==========================================
+
+CREATE TABLE semesters (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    parcours_id BIGINT NOT NULL,
+    number INT NOT NULL,
+
+    CONSTRAINT fk_semesters_parcours
+       FOREIGN KEY (parcours_id)
+           REFERENCES parcours(id)
+           ON DELETE CASCADE,
+
+    CONSTRAINT uq_semester_number
+       UNIQUE (parcours_id, number),
+
+    CONSTRAINT chk_semester_number
+       CHECK (number > 0)
 );
 
-CREATE TABLE "mentions" (
-  "id" integer PRIMARY KEY,
-  "diploma_id" integer NOT NULL,
-  "name" varchar(150) NOT NULL
+
+-- ==========================================
+-- 3. TEACHING UNITS (UE)
+-- ==========================================
+
+CREATE TABLE teaching_units (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    semester_id BIGINT NOT NULL,
+    code VARCHAR(50),
+    name VARCHAR(255) NOT NULL,
+    category VARCHAR(20) NOT NULL,
+    ects DECIMAL(4,1) NOT NULL,
+
+    CONSTRAINT fk_teaching_units_semester
+        FOREIGN KEY (semester_id)
+            REFERENCES semesters(id)
+            ON DELETE CASCADE,
+
+    CONSTRAINT uq_teaching_unit_code
+        UNIQUE (semester_id, code),
+
+    CONSTRAINT chk_teaching_unit_category
+        CHECK (category IN (
+                            'MAJOR_1',
+                            'MAJOR_2',
+                            'MINOR',
+                            'TRANSVERSAL'
+            )),
+
+    CONSTRAINT chk_teaching_unit_ects
+        CHECK (ects > 0)
 );
 
-CREATE TABLE "parcours" (
-  "id" integer PRIMARY KEY,
-  "mention_id" integer NOT NULL,
-  "name" varchar(200) NOT NULL,
-  "description" text
+
+-- ==========================================
+-- 4. SUBJECTS (CONTENUS PÉDAGOGIQUES)
+-- ==========================================
+
+CREATE TABLE subjects (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    teaching_unit_id BIGINT NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    objectives TEXT,
+    content TEXT,
+
+    CONSTRAINT fk_subjects_teaching_unit
+      FOREIGN KEY (teaching_unit_id)
+          REFERENCES teaching_units(id)
+          ON DELETE CASCADE,
+
+    CONSTRAINT uq_subject_name
+      UNIQUE (teaching_unit_id, name)
 );
 
-CREATE TABLE "academic_levels" (
-  "id" integer PRIMARY KEY,
-  "parcours_id" integer NOT NULL,
-  "name" varchar(10) NOT NULL
+
+-- ==========================================
+-- 5. LEARNING RESOURCES
+-- ==========================================
+
+CREATE TABLE learning_resources (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    subject_id BIGINT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    url TEXT NOT NULL,
+    description TEXT,
+    resource_type VARCHAR(20) NOT NULL,
+
+    CONSTRAINT fk_resources_subject
+        FOREIGN KEY (subject_id)
+            REFERENCES subjects(id)
+            ON DELETE CASCADE,
+
+    CONSTRAINT uq_resource_url
+        UNIQUE (subject_id, url),
+
+    CONSTRAINT chk_resource_type
+        CHECK (resource_type IN (
+                                 'DOCUMENT',
+                                 'VIDEO',
+                                 'WEBSITE',
+                                 'EXERCISE',
+                                 'TOOL',
+                                 'OTHER'
+            ))
 );
 
-CREATE TABLE "semesters" (
-  "id" integer PRIMARY KEY,
-  "academic_level_id" integer NOT NULL,
-  "number" integer NOT NULL,
-  "name" varchar(50)
+
+-- ==========================================
+-- 6. CAREER OPPORTUNITIES
+-- ==========================================
+
+CREATE TABLE career_opportunities (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    parcours_id BIGINT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    sector VARCHAR(150),
+    description TEXT,
+    required_skills TEXT,
+
+    CONSTRAINT fk_careers_parcours
+      FOREIGN KEY (parcours_id)
+          REFERENCES parcours(id)
+          ON DELETE CASCADE,
+
+    CONSTRAINT uq_career_title
+      UNIQUE (parcours_id, title)
 );
-
-CREATE TABLE "teaching_units" (
-  "id" integer PRIMARY KEY,
-  "semester_id" integer NOT NULL,
-  "code" varchar(30),
-  "name" varchar(200) NOT NULL,
-  "description" text,
-  "ects" decimal(4,1)
-);
-
-CREATE TABLE "subjects" (
-  "id" integer PRIMARY KEY,
-  "teaching_unit_id" integer NOT NULL,
-  "code" varchar(30),
-  "name" varchar(200) NOT NULL,
-  "description" text
-);
-
-CREATE TABLE "learning_resources" (
-  "id" integer PRIMARY KEY,
-  "title" varchar(200) NOT NULL,
-  "url" varchar(500) NOT NULL,
-  "description" text,
-  "resource_type" varchar(50)
-);
-
-CREATE TABLE "subject_resources" (
-  "subject_id" integer NOT NULL,
-  "resource_id" integer NOT NULL,
-  PRIMARY KEY ("subject_id", "resource_id")
-);
-
-CREATE TABLE "career_opportunities" (
-  "id" integer PRIMARY KEY,
-  "title" varchar(200) NOT NULL,
-  "description" text,
-  "sector" varchar(150)
-);
-
-CREATE TABLE "parcours_careers" (
-  "parcours_id" integer NOT NULL,
-  "career_opportunity_id" integer NOT NULL,
-  PRIMARY KEY ("parcours_id", "career_opportunity_id")
-);
-
-CREATE TABLE "skills" (
-  "id" integer PRIMARY KEY,
-  "name" varchar(150) UNIQUE NOT NULL,
-  "description" text
-);
-
-CREATE TABLE "career_skills" (
-  "career_opportunity_id" integer NOT NULL,
-  "skill_id" integer NOT NULL,
-  PRIMARY KEY ("career_opportunity_id", "skill_id")
-);
-
-CREATE UNIQUE INDEX ON "academic_levels" ("parcours_id", "name");
-
-CREATE UNIQUE INDEX ON "semesters" ("academic_level_id", "number");
-
-CREATE UNIQUE INDEX ON "teaching_units" ("semester_id", "code");
-
-CREATE UNIQUE INDEX ON "subjects" ("teaching_unit_id", "code");
-
-COMMENT ON COLUMN "academic_levels"."name" IS 'M1 or M2';
-
-COMMENT ON COLUMN "teaching_units"."ects" IS 'ECTS allocated to the UE';
-
-ALTER TABLE "diplomas" ADD FOREIGN KEY ("establishment_id") REFERENCES "establishments" ("id") DEFERRABLE INITIALLY IMMEDIATE;
-
-ALTER TABLE "mentions" ADD FOREIGN KEY ("diploma_id") REFERENCES "diplomas" ("id") DEFERRABLE INITIALLY IMMEDIATE;
-
-ALTER TABLE "parcours" ADD FOREIGN KEY ("mention_id") REFERENCES "mentions" ("id") DEFERRABLE INITIALLY IMMEDIATE;
-
-ALTER TABLE "academic_levels" ADD FOREIGN KEY ("parcours_id") REFERENCES "parcours" ("id") DEFERRABLE INITIALLY IMMEDIATE;
-
-ALTER TABLE "semesters" ADD FOREIGN KEY ("academic_level_id") REFERENCES "academic_levels" ("id") DEFERRABLE INITIALLY IMMEDIATE;
-
-ALTER TABLE "teaching_units" ADD FOREIGN KEY ("semester_id") REFERENCES "semesters" ("id") DEFERRABLE INITIALLY IMMEDIATE;
-
-ALTER TABLE "subjects" ADD FOREIGN KEY ("teaching_unit_id") REFERENCES "teaching_units" ("id") DEFERRABLE INITIALLY IMMEDIATE;
-
-ALTER TABLE "subject_resources" ADD FOREIGN KEY ("subject_id") REFERENCES "subjects" ("id") DEFERRABLE INITIALLY IMMEDIATE;
-
-ALTER TABLE "subject_resources" ADD FOREIGN KEY ("resource_id") REFERENCES "learning_resources" ("id") DEFERRABLE INITIALLY IMMEDIATE;
-
-ALTER TABLE "parcours_careers" ADD FOREIGN KEY ("parcours_id") REFERENCES "parcours" ("id") DEFERRABLE INITIALLY IMMEDIATE;
-
-ALTER TABLE "parcours_careers" ADD FOREIGN KEY ("career_opportunity_id") REFERENCES "career_opportunities" ("id") DEFERRABLE INITIALLY IMMEDIATE;
-
-ALTER TABLE "career_skills" ADD FOREIGN KEY ("career_opportunity_id") REFERENCES "career_opportunities" ("id") DEFERRABLE INITIALLY IMMEDIATE;
-
-ALTER TABLE "career_skills" ADD FOREIGN KEY ("skill_id") REFERENCES "skills" ("id") DEFERRABLE INITIALLY IMMEDIATE;

@@ -1,5 +1,6 @@
 package com.eduadvice.backend.service;
 
+import com.eduadvice.backend.dto.CareerOpportunitySummaryDTO;
 import com.eduadvice.backend.dto.ParcoursResponseDTO;
 import com.eduadvice.backend.entity.CareerOpportunity;
 import com.eduadvice.backend.entity.Parcours;
@@ -50,9 +51,25 @@ public class ParcoursService {
         Optional<Parcours> parcours = parcoursRepository.findById(id);
 
         if(parcours.isEmpty()) {
-            throw new RessourceNotFoundException(" Le parcours avec l'identifiant " + id + " n'existe pas.");
+            throw new RessourceNotFoundException("Le parcours avec l'identifiant " + id + " n'existe pas.");
         }
 
         return toDTO(parcours.get());
+    }
+
+    public List<CareerOpportunitySummaryDTO> getCareerOpportunities(Long id) {
+        Parcours parcours = parcoursRepository.findById(id)
+                .orElseThrow(() -> new RessourceNotFoundException("Le parcours avec l'identifiant"  + id + " n'existe pas."));
+
+        return parcours.getCareerOpportunities()
+                .stream()
+                .map(career -> new CareerOpportunitySummaryDTO(
+                        career.getId(),
+                        career.getTitle(),
+                        career.getSector(),
+                        career.getDescription(),
+                        career.getRequired_skills()
+                ))
+                .toList();
     }
 }

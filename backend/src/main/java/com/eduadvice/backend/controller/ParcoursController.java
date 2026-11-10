@@ -1,5 +1,6 @@
 package com.eduadvice.backend.controller;
 
+import com.eduadvice.backend.dto.CareerOpportunitySummaryDTO;
 import com.eduadvice.backend.dto.ParcoursResponseDTO;
 import com.eduadvice.backend.entity.Parcours;
 import com.eduadvice.backend.service.ParcoursService;
@@ -26,5 +27,11 @@ public class ParcoursController {
     @GetMapping("/{id}")
     public ResponseEntity<ParcoursResponseDTO> getParcours(@PathVariable Long id){
         return ResponseEntity.ok(parcoursService.getParcoursById(id));
+    }
+
+    @GetMapping("/{id}/career-opportunities")
+    public List<CareerOpportunitySummaryDTO> getCareerOpportunities(
+            @PathVariable Long id) {
+        return parcoursService.getCareerOpportunities(id);
     }
 }

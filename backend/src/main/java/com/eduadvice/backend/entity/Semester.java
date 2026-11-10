@@ -1,0 +1,47 @@
+package com.eduadvice.backend.entity;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "semesters")
+public class Semester {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
+    private Integer number;
+
+    @ManyToOne
+    @JoinColumn(name = "parcours_id", nullable = false)
+    private Parcours parcours;
+
+    public Semester() {
+    }
+
+    public Semester(Integer number, Parcours parcours) {
+        this.number = number;
+        this.parcours = parcours;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Integer getNumber() {
+        return number;
+    }
+
+    public Parcours getParcours() {
+        return parcours;
+    }
+
+    public void setNumber(Integer number) {
+        this.number = number;
+    }
+
+    public void setParcours(Parcours parcours) {
+        this.parcours = parcours;
+    }
+}

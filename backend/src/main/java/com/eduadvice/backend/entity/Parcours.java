@@ -2,7 +2,9 @@ package com.eduadvice.backend.entity;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -44,6 +46,9 @@ public class Parcours {
     )
     private Set<CareerOpportunity> careerOpportunities = new HashSet<>();
 
+    @OneToMany(mappedBy = "parcours")
+    private List<Semester> semesters = new ArrayList<>();
+
     public Parcours() {
     }
 
@@ -65,6 +70,17 @@ public class Parcours {
     public void removeCareerOpportunity(CareerOpportunity opportunity){
         careerOpportunities.remove(opportunity);
         opportunity.getParcours().remove(this);
+    }
+
+    //helper for Semester
+    public void addSemester(Semester semester){
+        semesters.add(semester);
+        semester.setParcours(this);
+    }
+
+    public void removeSemester(Semester semester){
+        semesters.remove(semester);
+        semester.setParcours(null);
     }
 
     public Long getId() {
@@ -102,5 +118,9 @@ public class Parcours {
     // setter for the test
     public void setCareerOpportunities(Set<CareerOpportunity> careerOpportunities) {
         this.careerOpportunities = careerOpportunities;
+    }
+
+    public List<Semester> getSemesters() {
+        return semesters;
     }
 }

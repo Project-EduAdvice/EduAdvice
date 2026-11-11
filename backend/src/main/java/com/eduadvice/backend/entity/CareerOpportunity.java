@@ -12,6 +12,7 @@ public class CareerOpportunity {
     private Long id;
 
     @Basic
+    @Column(nullable = false)
     private String title;
 
     @Basic
@@ -44,39 +45,19 @@ public class CareerOpportunity {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public String getSector() {
         return sector;
-    }
-
-    public void setSector(String sector) {
-        this.sector = sector;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public String getRequired_skills() {
         return required_skills;
     }
 
-    public void setRequired_skills(String required_skills) {
-        this.required_skills = required_skills;
-    }
-
     public Set<Parcours> getParcours() {
         return parcours;
-    }
-
-    public void setParcours(Set<Parcours> parcours) {
-        this.parcours = parcours;
     }
 }

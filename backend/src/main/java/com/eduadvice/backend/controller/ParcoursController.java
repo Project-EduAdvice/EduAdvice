@@ -1,8 +1,7 @@
 package com.eduadvice.backend.controller;
 
-import com.eduadvice.backend.dto.CareerOpportunitySummaryDTO;
-import com.eduadvice.backend.dto.ParcoursResponseDTO;
-import com.eduadvice.backend.entity.Parcours;
+import com.eduadvice.backend.dto.CareerOpportunityDTO;
+import com.eduadvice.backend.dto.ParcoursDTO;
 import com.eduadvice.backend.service.ParcoursService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,17 +19,17 @@ public class ParcoursController {
     ParcoursService parcoursService;
 
     @GetMapping
-    public ResponseEntity<List<ParcoursResponseDTO>> getAllParcours(){
+    public ResponseEntity<List<ParcoursDTO>> getAllParcours(){
         return ResponseEntity.ok(parcoursService.getAllParcours());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ParcoursResponseDTO> getParcours(@PathVariable Long id){
+    @GetMapping({"/{id}","/{id}/"})
+    public ResponseEntity<ParcoursDTO> getParcours(@PathVariable Long id){
         return ResponseEntity.ok(parcoursService.getParcoursById(id));
     }
 
-    @GetMapping("/{id}/career-opportunities")
-    public List<CareerOpportunitySummaryDTO> getCareerOpportunities(
+    @GetMapping({"/{id}/career-opportunities","/{id}/career-opportunities/"})
+    public List<CareerOpportunityDTO> getCareerOpportunities(
             @PathVariable Long id) {
         return parcoursService.getCareerOpportunities(id);
     }

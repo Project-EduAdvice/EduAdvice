@@ -27,11 +27,7 @@ public class DataInitializerService {
 
     @Transactional
     public void initialize() {
-
-        // =====================================
-        // 1. Initialize Parcours
-        // =====================================
-
+        // Initialize Parcours
         if (parcoursRepository.count() == 0) {
 
             List<Parcours> parcours = List.of(
@@ -58,10 +54,7 @@ public class DataInitializerService {
             parcoursRepository.saveAll(parcours);
         }
 
-        // =====================================
-        // 2. Initialize Career Opportunities
-        // =====================================
-
+        // Initialize Career Opportunities
         if (opportunityRepository.count() == 0) {
 
             List<CareerOpportunity> opportunities = List.of(
@@ -109,13 +102,6 @@ public class DataInitializerService {
                     ),
 
                     new CareerOpportunity(
-                            "Security Engineer",
-                            "Cybersecurity",
-                            "Designs and implements security solutions to protect systems, networks and applications.",
-                            "Network Security, Linux, Firewalls, Cryptography, Python"
-                    ),
-
-                    new CareerOpportunity(
                             "Backend Developer",
                             "Software Development",
                             "Develops server-side applications, APIs and database integrations.",
@@ -126,10 +112,7 @@ public class DataInitializerService {
             opportunityRepository.saveAll(opportunities);
         }
 
-        // =====================================
-        // 3. Retrieve entities
-        // =====================================
-
+        // Retrieve entities
         List<Parcours> parcoursList = parcoursRepository.findAll();
 
         List<CareerOpportunity> opportunities =
@@ -149,34 +132,31 @@ public class DataInitializerService {
                         "Parcours P2S not found"
                 ));
 
-        // =====================================
-        // 4. Create Many-to-Many associations
-        // =====================================
-
+        // Create Many-to-Many associations
         for (CareerOpportunity opportunity : opportunities) {
 
             switch (opportunity.getTitle()) {
 
                 case "Data Analyst",
                      "Data Scientist",
-                     "Data Engineer",
                      "Business Intelligence Analyst" ->
 
                         ei2d.addCareerOpportunity(opportunity);
 
                 case "Software Engineer",
                      "Backend Developer",
-                     "Cybersecurity Analyst",
-                     "Security Engineer" ->
+                     "Cybersecurity Analyst" ->
 
                         p2s.addCareerOpportunity(opportunity);
+
+                case  "Data Engineer" -> {
+                    p2s.addCareerOpportunity(opportunity);
+                    ei2d.addCareerOpportunity(opportunity);
+                }
             }
         }
 
-        // =====================================
-        // 5. Save associations
-        // =====================================
-
+        // Save associations
         parcoursRepository.saveAll(parcoursList);
     }
 }

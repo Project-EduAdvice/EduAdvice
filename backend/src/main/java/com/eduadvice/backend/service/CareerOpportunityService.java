@@ -1,8 +1,7 @@
 package com.eduadvice.backend.service;
 
-import com.eduadvice.backend.dto.CareerOpportunityResponseDTO;
+import com.eduadvice.backend.dto.CareerOpportunityDTO;
 import com.eduadvice.backend.entity.CareerOpportunity;
-import com.eduadvice.backend.entity.Parcours;
 import com.eduadvice.backend.exception.RessourceNotFoundException;
 import com.eduadvice.backend.repository.CareerOpportunityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -20,30 +18,26 @@ public class CareerOpportunityService {
     @Autowired
     private CareerOpportunityRepository careerOpportunityRepository;
 
-    private CareerOpportunityResponseDTO toDTO(CareerOpportunity opportunity){
-        CareerOpportunityResponseDTO dto = new CareerOpportunityResponseDTO(
+    private CareerOpportunityDTO toDTO(CareerOpportunity opportunity){
+        CareerOpportunityDTO dto = new CareerOpportunityDTO(
                 opportunity.getId(),
                 opportunity.getTitle(),
                 opportunity.getSector(),
                 opportunity.getDescription(),
-                opportunity.getRequired_skills(),
-                opportunity.getParcours()
-                        .stream()
-                        .map(Parcours::getId)
-                        .collect(Collectors.toSet())
-        );
+                opportunity.getRequired_skills()
+                );
 
         return dto;
     }
 
-    public List<CareerOpportunityResponseDTO> getAllCareerOpportunities(){
+    public List<CareerOpportunityDTO> getAllCareerOpportunities(){
         return careerOpportunityRepository.findAll()
                 .stream()
                 .map(this::toDTO)
                 .toList();
     }
 
-    public CareerOpportunityResponseDTO getCareerOpportunityById(Long id) {
+    public CareerOpportunityDTO getCareerOpportunityById(Long id) {
         Optional<CareerOpportunity> careerOpportunity = careerOpportunityRepository.findById(id);
 
         if(careerOpportunity.isEmpty()){

@@ -2,6 +2,7 @@ package com.eduadvice.backend.service;
 
 import com.eduadvice.backend.dto.CareerOpportunityDTO;
 import com.eduadvice.backend.dto.ParcoursDTO;
+import com.eduadvice.backend.dto.SemesterDTO;
 import com.eduadvice.backend.entity.Parcours;
 import com.eduadvice.backend.exception.RessourceNotFoundException;
 import com.eduadvice.backend.repository.ParcoursRepository;
@@ -63,6 +64,18 @@ public class ParcoursService {
                         career.getSector(),
                         career.getDescription(),
                         career.getRequired_skills()
+                ))
+                .toList();
+    }
+
+    public List<SemesterDTO> getSemesters(Long id){
+        Parcours parcours = parcoursRepository.findById(id)
+                .orElseThrow(() -> new RessourceNotFoundException("Le parcours avec l'identifiant"  + id + " n'existe pas."));
+
+        return parcours.getSemesters()
+                .stream()
+                .map(semester -> new SemesterDTO(
+                        semester.getNumber()
                 ))
                 .toList();
     }

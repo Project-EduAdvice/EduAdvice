@@ -60,7 +60,7 @@ class CareerOpportunityServiceTest {
     }
 
     @Test
-    void getAllCareer_shouldReturnEmptyList_whenNoPCareerExists() {
+    void getAllCareer_shouldReturnEmptyList_whenNoCareerExists() {
         when(careerRepository.findAll()).thenReturn(List.of());
 
         List<CareerOpportunityDTO> result = careerService.getAllCareerOpportunities();

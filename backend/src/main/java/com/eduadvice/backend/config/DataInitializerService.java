@@ -2,9 +2,10 @@ package com.eduadvice.backend.config;
 
 import com.eduadvice.backend.entity.CareerOpportunity;
 import com.eduadvice.backend.entity.Parcours;
+import com.eduadvice.backend.entity.Semester;
 import com.eduadvice.backend.repository.CareerOpportunityRepository;
 import com.eduadvice.backend.repository.ParcoursRepository;
-
+import com.eduadvice.backend.repository.SemesterRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,14 +16,16 @@ public class DataInitializerService {
 
     private final ParcoursRepository parcoursRepository;
     private final CareerOpportunityRepository opportunityRepository;
+    private final SemesterRepository semesterRepository;
 
     // Constructor injection
     public DataInitializerService(
             ParcoursRepository parcoursRepository,
-            CareerOpportunityRepository opportunityRepository) {
+            CareerOpportunityRepository opportunityRepository, SemesterRepository semesterRepository) {
 
         this.parcoursRepository = parcoursRepository;
         this.opportunityRepository = opportunityRepository;
+        this.semesterRepository = semesterRepository;
     }
 
     @Transactional
@@ -110,6 +113,28 @@ public class DataInitializerService {
             );
 
             opportunityRepository.saveAll(opportunities);
+        }
+
+        if (semesterRepository.count() == 0) {
+
+            Parcours ei2d = parcoursRepository.findAll().stream()
+                    .filter(p -> p.getName().equals("EI2D"))
+                    .findFirst()
+                    .orElseThrow();
+
+            Parcours p2s = parcoursRepository.findAll().stream()
+                    .filter(p -> p.getName().equals("P2S"))
+                    .findFirst()
+                    .orElseThrow();
+
+            List<Semester> semesters = List.of(
+                    new Semester(3, ei2d),
+                    new Semester(4, ei2d),
+                    new Semester(3, p2s),
+                    new Semester(4, p2s)
+            );
+
+            semesterRepository.saveAll(semesters);
         }
 
         // Retrieve entities

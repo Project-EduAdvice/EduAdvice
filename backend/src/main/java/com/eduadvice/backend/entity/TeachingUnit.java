@@ -5,15 +5,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
-@Table(
-    name = "teaching_units",
-    uniqueConstraints = {
-        @UniqueConstraint(
-            name = "uq_teaching_unit_code",
-            columnNames = {"semester_id", "code"}
-        )
-    }
-)
+@Table(name = "teaching_units")
 public class TeachingUnit {
 
     @Id
@@ -24,9 +16,6 @@ public class TeachingUnit {
     @JoinColumn(name = "semester_id", nullable = false)
     private Semester semester;
 
-    @Column(length = 50)
-    private String code;
-
     @Column(nullable = false)
     private String name;
 
@@ -34,7 +23,7 @@ public class TeachingUnit {
     @Column(nullable = false, length = 20)
     private TeachingUnitCategory category;
 
-    @Column(nullable = false, precision = 4, scale = 1)
+    @Column(precision = 4, scale = 1)
     private BigDecimal ects;
 
     public TeachingUnit() {
@@ -42,13 +31,11 @@ public class TeachingUnit {
 
     public TeachingUnit(
             Semester semester,
-            String code,
             String name,
             TeachingUnitCategory category,
             BigDecimal ects
     ) {
         this.semester = semester;
-        this.code = code;
         this.name = name;
         this.category = category;
         this.ects = ects;
@@ -60,10 +47,6 @@ public class TeachingUnit {
 
     public Semester getSemester() {
         return semester;
-    }
-
-    public String getCode() {
-        return code;
     }
 
     public String getName() {
@@ -80,10 +63,6 @@ public class TeachingUnit {
 
     public void setSemester(Semester semester) {
         this.semester = semester;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
     }
 
     public void setName(String name) {

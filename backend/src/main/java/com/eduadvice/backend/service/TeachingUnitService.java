@@ -5,6 +5,7 @@ import com.eduadvice.backend.dto.TeachingUnitResponseDTO;
 import com.eduadvice.backend.entity.TeachingUnit;
 import com.eduadvice.backend.exception.RessourceNotFoundException;
 import com.eduadvice.backend.repository.TeachingUnitRepository;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,7 +35,9 @@ public class TeachingUnitService {
         return convertToDTO(teachingUnit);
     }
 
-    public List<TeachingUnitResponseDTO> getTeachingUnitsBySemester(Long semesterId) {
+    public List<TeachingUnitResponseDTO> getTeachingUnitsBySemester(
+            Long semesterId
+    ) {
         return teachingUnitRepository.findBySemesterId(semesterId)
                 .stream()
                 .map(this::convertToDTO)
@@ -45,7 +48,6 @@ public class TeachingUnitService {
         return new TeachingUnitResponseDTO(
                 teachingUnit.getId(),
                 teachingUnit.getSemester().getId(),
-                teachingUnit.getCode(),
                 teachingUnit.getName(),
                 teachingUnit.getCategory(),
                 teachingUnit.getEcts()

@@ -1,7 +1,9 @@
+
 package com.eduadvice.backend.controller;
 
 import com.eduadvice.backend.dto.TeachingUnitResponseDTO;
 import com.eduadvice.backend.service.TeachingUnitService;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,13 +24,16 @@ public class TeachingUnitController {
     }
 
     @GetMapping("/{id}")
-    public TeachingUnitResponseDTO getTeachingUnitById(@PathVariable Long id) {
+    public TeachingUnitResponseDTO getTeachingUnitById(
+            @PathVariable Long id
+    ) {
         return teachingUnitService.getTeachingUnitById(id);
     }
 
     @GetMapping("/semester/{semesterId}")
     public List<TeachingUnitResponseDTO> getTeachingUnitsBySemester(
-            @PathVariable Long semesterId) {
+            @PathVariable Long semesterId
+    ) {
         return teachingUnitService.getTeachingUnitsBySemester(semesterId);
     }
 }

@@ -60,4 +60,9 @@ public class CareerOpportunity {
     public Set<Parcours> getParcours() {
         return parcours;
     }
+
+    // setter for the test
+    public void setParcours(Set<Parcours> parcours) {
+        this.parcours = parcours;
+    }
 }

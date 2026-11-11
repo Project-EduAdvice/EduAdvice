@@ -1,6 +1,7 @@
 package com.eduadvice.backend.controller;
 
 import com.eduadvice.backend.dto.CareerOpportunityDTO;
+import com.eduadvice.backend.dto.ParcoursDTO;
 import com.eduadvice.backend.exception.RessourceNotFoundException;
 import com.eduadvice.backend.service.CareerOpportunityService;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,6 +31,7 @@ class CareerOpportunityControllerTest {
     private CareerOpportunityService careerService;
 
     private CareerOpportunityDTO career1, career2;
+    private ParcoursDTO parcours1;
 
     @BeforeEach
     void setUp() {
@@ -47,6 +49,16 @@ class CareerOpportunityControllerTest {
                 "Data",
                 "Develops statistical models and machine learning algorithms to extract insights and make predictions.",
                 "Python, Machine Learning, Statistics"
+        );
+
+        parcours1 = new ParcoursDTO(
+                2L,
+                "P2S",
+                "Master 2",
+                "Master Informatique",
+                "Informatique",
+                "Université Sorbonne Paris Nord",
+                "Programmation, Sûreté et Sécurité."
         );
     }
 
@@ -95,5 +107,31 @@ class CareerOpportunityControllerTest {
                 .andDo(print());
 
         verify(careerService).getCareerOpportunityById(99L);
+    }
+
+    @Test
+    void getParcoursList_shouldReturnParcoursList() throws Exception {
+        when(careerService.getParcoursList(1L)).thenReturn(List.of(parcours1));
+
+        mockMvc.perform(get("/api/career-opportunities/1/parcours"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[0].name").value("P2S"))
+                .andExpect(jsonPath("$[0].level").value("Master 2"))
+                .andDo(print());
+
+        verify(careerService).getParcoursList(1L);
+    }
+
+    @Test
+    void getParcoursList_shouldReturnEmptyList_whenNoParcoursExist() throws Exception {
+        when(careerService.getParcoursList(2L)).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/career-opportunities/2/parcours"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(0))
+                .andDo(print());
+
+        verify(careerService).getParcoursList(2L);
     }
 }

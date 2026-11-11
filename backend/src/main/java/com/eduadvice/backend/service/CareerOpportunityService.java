@@ -1,6 +1,7 @@
 package com.eduadvice.backend.service;
 
 import com.eduadvice.backend.dto.CareerOpportunityDTO;
+import com.eduadvice.backend.dto.ParcoursDTO;
 import com.eduadvice.backend.entity.CareerOpportunity;
 import com.eduadvice.backend.exception.RessourceNotFoundException;
 import com.eduadvice.backend.repository.CareerOpportunityRepository;
@@ -45,5 +46,23 @@ public class CareerOpportunityService {
         }
 
         return toDTO(careerOpportunity.get());
+    }
+
+    public List<ParcoursDTO> getParcoursList(Long id) {
+        CareerOpportunity careerOpportunity = careerOpportunityRepository.findById(id)
+                .orElseThrow(() -> new RessourceNotFoundException("L'opportunité de carrière avec l'identifiant " + id + " n'existe pas."));
+
+        return careerOpportunity.getParcours()
+                .stream()
+                .map(parcours -> new ParcoursDTO(
+                        parcours.getId(),
+                        parcours.getName(),
+                        parcours.getLevel(),
+                        parcours.getDiploma(),
+                        parcours.getMention(),
+                        parcours.getEstablishment(),
+                        parcours.getDescription()
+                ))
+                .toList();
     }
 }

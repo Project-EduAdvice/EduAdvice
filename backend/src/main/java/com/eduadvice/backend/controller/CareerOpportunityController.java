@@ -1,6 +1,7 @@
 package com.eduadvice.backend.controller;
 
 import com.eduadvice.backend.dto.CareerOpportunityDTO;
+import com.eduadvice.backend.dto.ParcoursDTO;
 import com.eduadvice.backend.service.CareerOpportunityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,5 +26,10 @@ public class CareerOpportunityController {
     @GetMapping({"/{id}", "/{id}/"})
     public ResponseEntity<CareerOpportunityDTO> getCareerOpportunityById(@PathVariable Long id) {
         return ResponseEntity.ok(careerOpportunityService.getCareerOpportunityById(id));
+    }
+
+    @GetMapping({"/{id}/parcours", "/{id}/parcours/"})
+    public List<ParcoursDTO> getParcoursList(@PathVariable Long id){
+        return careerOpportunityService.getParcoursList(id);
     }
 }

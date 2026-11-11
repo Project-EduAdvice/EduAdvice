@@ -2,7 +2,6 @@ package com.eduadvice.backend.controller;
 
 import com.eduadvice.backend.dto.CareerOpportunityDTO;
 import com.eduadvice.backend.dto.ParcoursDTO;
-import com.eduadvice.backend.entity.Parcours;
 import com.eduadvice.backend.exception.RessourceNotFoundException;
 import com.eduadvice.backend.service.ParcoursService;
 import org.junit.jupiter.api.BeforeEach;

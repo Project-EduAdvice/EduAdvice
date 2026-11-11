@@ -111,6 +111,7 @@ class ParcoursServiceTest {
         when(parcoursRepository.findById(99L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> parcoursService.getParcoursById(99L)).isInstanceOf(RessourceNotFoundException.class);
+
         verify(parcoursRepository).findById(99L);
     }
 
@@ -131,13 +132,13 @@ class ParcoursServiceTest {
 
     @Test
     void getCareerOpportunities_shouldReturnEmptyList_whenNoCareerOpportunitiesExist() {
-        when(parcoursRepository.findById(1L)).thenReturn(Optional.of(parcours2));
+        when(parcoursRepository.findById(2L)).thenReturn(Optional.of(parcours2));
 
-        List<CareerOpportunityDTO> result = parcoursService.getCareerOpportunities(1L);
+        List<CareerOpportunityDTO> result = parcoursService.getCareerOpportunities(2L);
 
         assertThat(result).isEmpty();
 
-        verify(parcoursRepository).findById(1L);
+        verify(parcoursRepository).findById(2L);
     }
 
     @Test

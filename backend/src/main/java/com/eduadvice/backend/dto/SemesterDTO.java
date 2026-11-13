@@ -1,4 +1,6 @@
 package com.eduadvice.backend.dto;
 
-public record SemesterDTO(Integer number) {
+
+public record SemesterDTO(Integer number,
+                          ParcoursDTO parcours) {
 }

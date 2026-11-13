@@ -24,7 +24,20 @@ public class SemesterService {
     }
 
     private SemesterDTO toDTO(Semester semester){
-        SemesterDTO dto = new SemesterDTO(semester.getNumber());
+        // intialization for the parcours DTO
+        Parcours parcours = semester.getParcours();
+
+        SemesterDTO dto = new SemesterDTO(semester.getNumber(),
+                new ParcoursDTO(
+                    parcours.getId(),
+                    parcours.getName(),
+                    parcours.getLevel(),
+                    parcours.getDiploma(),
+                    parcours.getMention(),
+                    parcours.getEstablishment(),
+                    parcours.getDescription()
+                    )
+        );
 
         return dto;
     }

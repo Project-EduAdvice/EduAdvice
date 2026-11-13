@@ -1,9 +1,11 @@
 
 package com.eduadvice.backend.service;
 
+import com.eduadvice.backend.dto.ParcoursDTO;
 import com.eduadvice.backend.dto.SemesterDTO;
 import com.eduadvice.backend.dto.SubjectResponseDTO;
 import com.eduadvice.backend.dto.TeachingUnitResponseDTO;
+import com.eduadvice.backend.entity.Parcours;
 import com.eduadvice.backend.entity.Semester;
 import com.eduadvice.backend.entity.TeachingUnit;
 import com.eduadvice.backend.exception.RessourceNotFoundException;
@@ -57,7 +59,20 @@ public class TeachingUnitService {
 
         Semester semester = teachingUnit.getSemester();
 
-        return new SemesterDTO(semester.getNumber());
+        // intialization for the parcours DTO
+        Parcours parcours = semester.getParcours();
+
+        return new SemesterDTO(semester.getNumber(),
+                new ParcoursDTO(
+                        parcours.getId(),
+                        parcours.getName(),
+                        parcours.getLevel(),
+                        parcours.getDiploma(),
+                        parcours.getMention(),
+                        parcours.getEstablishment(),
+                        parcours.getDescription()
+                        )
+        );
     }
 
     public List<SubjectResponseDTO> getSubjects(Long id){

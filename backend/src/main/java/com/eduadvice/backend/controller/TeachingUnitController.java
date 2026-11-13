@@ -31,7 +31,7 @@ public class TeachingUnitController {
         return teachingUnitService.getTeachingUnitById(id);
     }
 
-    @GetMapping({"/{id}/semesters","/{id}/semesters/"})
+    @GetMapping({"/{id}/semester","/{id}/semester/"})
     public ResponseEntity<SemesterDTO> getSemester(@PathVariable Long id){
         return ResponseEntity.ok(teachingUnitService.getSemester(id));
     }

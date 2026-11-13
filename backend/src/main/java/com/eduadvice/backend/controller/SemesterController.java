@@ -2,6 +2,7 @@ package com.eduadvice.backend.controller;
 
 import com.eduadvice.backend.dto.SemesterDTO;
 import com.eduadvice.backend.dto.ParcoursDTO;
+import com.eduadvice.backend.dto.TeachingUnitResponseDTO;
 import com.eduadvice.backend.entity.Semester;
 import com.eduadvice.backend.service.SemesterService;
 import org.springframework.http.ResponseEntity;
@@ -38,5 +39,10 @@ public class SemesterController {
     @GetMapping("/parcours/{parcoursId}")
     public List<Semester> getSemestersByParcours(@PathVariable Long parcoursId) {
         return semesterService.getSemestersByParcours(parcoursId);
+    }
+
+    @GetMapping({"/{id}/teaching-units","/{id}/teaching-units/"})
+    public List<TeachingUnitResponseDTO> getTeachingUnits(@PathVariable Long id){
+        return semesterService.getTeachingUnits(id);
     }
 }

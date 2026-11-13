@@ -2,6 +2,7 @@ package com.eduadvice.backend.service;
 
 import com.eduadvice.backend.dto.ParcoursDTO;
 import com.eduadvice.backend.dto.SemesterDTO;
+import com.eduadvice.backend.dto.TeachingUnitResponseDTO;
 import com.eduadvice.backend.entity.Parcours;
 import com.eduadvice.backend.entity.Semester;
 import com.eduadvice.backend.exception.RessourceNotFoundException;
@@ -68,5 +69,21 @@ public class SemesterService {
                         parcours.getEstablishment(),
                         parcours.getDescription()
                 );
+    }
+
+    public List<TeachingUnitResponseDTO> getTeachingUnits(Long id){
+        Semester semester = semesterRepository.findById(id)
+                .orElseThrow(() -> new RessourceNotFoundException("Semester not found: " + id));
+
+        return semester.getTeachingUnits()
+                .stream()
+                .map(teachingUnit -> new TeachingUnitResponseDTO(
+                        teachingUnit.getId(),
+                        teachingUnit.getSemester().getId(),
+                        teachingUnit.getName(),
+                        teachingUnit.getCategory(),
+                        teachingUnit.getEcts()
+                ))
+                .toList();
     }
 }

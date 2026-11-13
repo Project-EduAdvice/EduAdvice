@@ -35,8 +35,7 @@ public class TeachingUnitController {
     public ResponseEntity<SemesterDTO> getSemester(@PathVariable Long id){
         return ResponseEntity.ok(teachingUnitService.getSemester(id));
     }
-
-    // There's no output for this route
+    
     @GetMapping("/semester/{semesterId}")
     public List<TeachingUnitResponseDTO> getTeachingUnitsBySemester(
             @PathVariable Long semesterId) {

@@ -1,7 +1,9 @@
 
 package com.eduadvice.backend.service;
 
+import com.eduadvice.backend.dto.SemesterDTO;
 import com.eduadvice.backend.dto.TeachingUnitResponseDTO;
+import com.eduadvice.backend.entity.Semester;
 import com.eduadvice.backend.entity.TeachingUnit;
 import com.eduadvice.backend.exception.RessourceNotFoundException;
 import com.eduadvice.backend.repository.TeachingUnitRepository;
@@ -42,6 +44,19 @@ public class TeachingUnitService {
                 .stream()
                 .map(this::convertToDTO)
                 .toList();
+    }
+
+    public SemesterDTO getSemester(Long teachingUnitId){
+        TeachingUnit teachingUnit = teachingUnitRepository.findById(teachingUnitId)
+                .orElseThrow(() -> new RessourceNotFoundException(
+                        "TeachingUnit not found : " + teachingUnitId
+                ));
+
+        Semester semester = teachingUnit.getSemester();
+
+        return new SemesterDTO(
+          semester.getNumber()
+        );
     }
 
     private TeachingUnitResponseDTO convertToDTO(TeachingUnit teachingUnit) {

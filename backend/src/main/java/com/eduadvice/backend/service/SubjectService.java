@@ -8,10 +8,12 @@ import com.eduadvice.backend.entity.TeachingUnit;
 import com.eduadvice.backend.exception.RessourceNotFoundException;
 import com.eduadvice.backend.repository.SubjectRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class SubjectService {
 
     private final SubjectRepository subjectRepository;

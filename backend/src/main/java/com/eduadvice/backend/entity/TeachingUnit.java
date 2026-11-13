@@ -3,6 +3,8 @@ package com.eduadvice.backend.entity;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "teaching_units")
@@ -25,6 +27,9 @@ public class TeachingUnit {
 
     @Column(precision = 4, scale = 1)
     private BigDecimal ects;
+
+    @OneToMany(mappedBy = "teachingUnit")
+    private List<Subject> subjects = new ArrayList<>();
 
     public TeachingUnit() {
     }
@@ -75,5 +80,9 @@ public class TeachingUnit {
 
     public void setEcts(BigDecimal ects) {
         this.ects = ects;
+    }
+
+    public List<Subject> getSubjects() {
+        return subjects;
     }
 }

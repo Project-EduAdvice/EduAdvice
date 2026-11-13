@@ -2,6 +2,9 @@ package com.eduadvice.backend.entity;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "semesters")
 public class Semester {
@@ -16,6 +19,10 @@ public class Semester {
     @ManyToOne
     @JoinColumn(name = "parcours_id", nullable = false)
     private Parcours parcours;
+
+    @OneToMany(mappedBy = "semester")
+    List<TeachingUnit> teachingUnits = new ArrayList<>();
+
 
     public Semester() {
     }
@@ -43,5 +50,9 @@ public class Semester {
 
     public void setParcours(Parcours parcours) {
         this.parcours = parcours;
+    }
+
+    public List<TeachingUnit> getTeachingUnits() {
+        return teachingUnits;
     }
 }

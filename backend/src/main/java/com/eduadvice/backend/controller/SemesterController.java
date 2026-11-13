@@ -34,6 +34,7 @@ public class SemesterController {
         return ResponseEntity.ok(semesterService.getParcours(id));
     }
 
+    // this route doesn't work because of lazy intialization
     @GetMapping("/parcours/{parcoursId}")
     public List<Semester> getSemestersByParcours(@PathVariable Long parcoursId) {
         return semesterService.getSemestersByParcours(parcoursId);

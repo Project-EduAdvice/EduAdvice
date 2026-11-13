@@ -28,12 +28,13 @@ public class SubjectController {
     public SubjectResponseDTO getSubjectById(@PathVariable Long id) {
         return subjectService.getSubjectById(id);
     }
-    
+
     @GetMapping({"/{id}/teaching-unit", "/{id}/teaching-unit/"})
     public ResponseEntity<TeachingUnitResponseDTO> getTeachingUnit(@PathVariable Long id){
         return ResponseEntity.ok(subjectService.getTeachingUnit(id));
     }
 
+    // print of the subject based on their teaching unit.
     @GetMapping("/teaching-unit/{teachingUnitId}")
     public List<SubjectResponseDTO> getSubjectsByTeachingUnit(
             @PathVariable Long teachingUnitId

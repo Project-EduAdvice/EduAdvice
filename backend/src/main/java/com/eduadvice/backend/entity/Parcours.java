@@ -123,4 +123,8 @@ public class Parcours {
     public List<Semester> getSemesters() {
         return semesters;
     }
+
+    public void setSemesters(List<Semester> semesters) {
+        this.semesters = semesters;
+    }
 }

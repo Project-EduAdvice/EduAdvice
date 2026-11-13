@@ -2,8 +2,10 @@ package com.eduadvice.backend.service;
 
 import com.eduadvice.backend.dto.CareerOpportunityDTO;
 import com.eduadvice.backend.dto.ParcoursDTO;
+import com.eduadvice.backend.dto.SemesterDTO;
 import com.eduadvice.backend.entity.CareerOpportunity;
 import com.eduadvice.backend.entity.Parcours;
+import com.eduadvice.backend.entity.Semester;
 import com.eduadvice.backend.exception.RessourceNotFoundException;
 import com.eduadvice.backend.repository.ParcoursRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,8 +31,9 @@ class ParcoursServiceTest {
     @InjectMocks
     private ParcoursService parcoursService;
 
-   private Parcours parcours1, parcours2;
+    private Parcours parcours1, parcours2;
     private CareerOpportunity career1, career2;
+    private Semester semester1,semester2;
 
     @BeforeEach
     void setUp() {
@@ -66,7 +69,11 @@ class ParcoursServiceTest {
                 "Python, SQL, ETL"
         );
 
+        semester1 = new Semester(3, parcours1);
+        semester2 = new Semester(4, parcours1);
+
         parcours1.setCareerOpportunities(Set.of(career1,career2));
+        parcours1.setSemesters(List.of(semester1, semester2));
     }
 
     @Test
@@ -143,11 +150,42 @@ class ParcoursServiceTest {
 
     @Test
     void getCareerOpportunities_shouldThrowException_whenParcoursNotFound() {
-
         when(parcoursRepository.findById(99L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> parcoursService.getCareerOpportunities(99L)).isInstanceOf(RessourceNotFoundException.class);
 
         verify(parcoursRepository).findById(99L);
     }
+
+    @Test
+    void getSemesters_shouldReturnSemester_whenExists(){
+        when(parcoursRepository.findById(1L)).thenReturn(Optional.of(parcours1));
+
+        List<SemesterDTO> result = parcoursService.getSemesters(1L);
+        assertThat(result).hasSize(2);
+        assertThat(result).extracting(SemesterDTO::number).containsExactly(3,4);
+
+        verify(parcoursRepository).findById(1L);
+    }
+
+    @Test
+    void getSemesters_shouldReturnEmptyList_whenNoSemesterExist(){
+        when(parcoursRepository.findById(2L)).thenReturn(Optional.of(parcours2));
+
+        List<SemesterDTO> result = parcoursService.getSemesters(2L);
+
+        assertThat(result).isEmpty();
+
+        verify(parcoursRepository).findById(2L);
+    }
+
+    @Test
+    void getSemesters_shouldThrowException_whenParcoursNotFound() {
+        when(parcoursRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> parcoursService.getSemesters(99L)).isInstanceOf(RessourceNotFoundException.class);
+
+        verify(parcoursRepository).findById(99L);
+    }
+
 }

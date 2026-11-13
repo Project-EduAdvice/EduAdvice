@@ -2,6 +2,7 @@ package com.eduadvice.backend.controller;
 
 import com.eduadvice.backend.dto.CareerOpportunityDTO;
 import com.eduadvice.backend.dto.ParcoursDTO;
+import com.eduadvice.backend.dto.SemesterDTO;
 import com.eduadvice.backend.exception.RessourceNotFoundException;
 import com.eduadvice.backend.service.ParcoursService;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,6 +33,7 @@ class ParcoursControllerTest {
 
     private ParcoursDTO parcours1, parcours2;
     private CareerOpportunityDTO career1;
+    private SemesterDTO semester1;
 
     @BeforeEach
     void setUp() {
@@ -61,6 +63,11 @@ class ParcoursControllerTest {
                 "Data",
                 "Conception de modèle statistiques et d'algorithmes de Machine Learning.",
                 "Python, Machine Learning, Statistics"
+        );
+
+        semester1 = new SemesterDTO(
+                3,
+                parcours1
         );
     }
 
@@ -138,5 +145,31 @@ class ParcoursControllerTest {
                 .andDo(print());
 
         verify(parcoursService).getCareerOpportunities(2L);
+    }
+
+    @Test
+    void getSemesters_shouldReturnSemesters() throws Exception {
+        when(parcoursService.getSemesters(1L)).thenReturn(List.of(semester1));
+
+        mockMvc.perform(get("/api/parcours/1/semesters"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[0].number").value("3"))
+                .andExpect(jsonPath("$[0].parcours.name").value("EI2D"))
+                .andDo(print());
+
+        verify(parcoursService).getSemesters(1L);
+    }
+
+    @Test
+    void getSemesters_shouldReturnEmptyList_whenNoSemestersExist() throws Exception {
+        when(parcoursService.getSemesters(2L)).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/parcours/2/semesters"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(0))
+                .andDo(print());
+
+        verify(parcoursService).getSemesters(2L);
     }
 }

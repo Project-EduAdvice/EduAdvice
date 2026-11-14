@@ -55,4 +55,8 @@ public class Semester {
     public List<TeachingUnit> getTeachingUnits() {
         return teachingUnits;
     }
+
+    public void setTeachingUnits(List<TeachingUnit> teachingUnits) {
+        this.teachingUnits = teachingUnits;
+    }
 }

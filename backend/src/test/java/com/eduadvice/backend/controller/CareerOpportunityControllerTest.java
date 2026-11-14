@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.List;
 
@@ -66,11 +65,23 @@ class CareerOpportunityControllerTest {
     void getAllCareer_shouldReturn200AndCareerList() throws Exception {
         when(careerService.getAllCareerOpportunities()).thenReturn(List.of(career1,career2));
 
-        ResultActions response = mockMvc.perform(get("/api/career-opportunities"));
-        response.andExpect(status().isOk())
+        mockMvc.perform(get("/api/career-opportunities"))
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2))
                 .andExpect(jsonPath("$[0].title").value("Software Engineer"))
                 .andExpect(jsonPath("$[1].title").value("Data Scientist"))
+                .andDo(print());
+
+        verify(careerService).getAllCareerOpportunities();
+    }
+
+    @Test
+    void getAllCareer_shouldReturnEmptyList_whenNoCareerExits() throws Exception {
+        when(careerService.getAllCareerOpportunities()).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/career-opportunities"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(0))
                 .andDo(print());
 
         verify(careerService).getAllCareerOpportunities();
@@ -88,8 +99,8 @@ class CareerOpportunityControllerTest {
     void getCareerById_shouldReturnCareer_whenExists() throws Exception {
         when(careerService.getCareerOpportunityById(1L)).thenReturn(career1);
 
-        ResultActions response = mockMvc.perform(get("/api/career-opportunities/1"));
-        response.andExpect(status().isOk())
+        mockMvc.perform(get("/api/career-opportunities/1"))
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value("Software Engineer"))
                 .andExpect(jsonPath("$.sector").value("Software Development"))
                 .andDo(print());

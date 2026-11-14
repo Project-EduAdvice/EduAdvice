@@ -66,18 +66,18 @@ class ParcoursControllerTest {
         );
 
         semester1 = new SemesterDTO(
+                1L,
                 3,
                 parcours1
         );
     }
 
     @Test
-    void getAllParcours_ShouldReturn200AndParcoursList() throws Exception {
+    void getAllParcours_shouldReturn200AndParcoursList() throws Exception {
         when(parcoursService.getAllParcours()).thenReturn(List.of(parcours1,parcours2));
 
-        ResultActions response = mockMvc.perform(get("/api/parcours"));
-
-        response.andExpect(status().isOk())
+        mockMvc.perform(get("/api/parcours"))
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2))
                 .andExpect(jsonPath("$[0].name").value("EI2D"))
                 .andExpect(jsonPath("$[1].name").value("P2S"))
@@ -87,7 +87,19 @@ class ParcoursControllerTest {
     }
 
     @Test
-    void getAllParcours_shouldReturn404_whenPathDoesNotExist() throws Exception {
+    void getAllParcours_shouldReturnEmptyList_whenNoParcoursExist() throws Exception {
+        when(parcoursService.getAllParcours()).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/parcours"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(0))
+                .andDo(print());
+
+        verify(parcoursService).getAllParcours();
+    }
+
+    @Test
+    void ShouldReturn404_whenPathDoesNotExist() throws Exception {
 
         mockMvc.perform(get("/api/parco"))
                 .andExpect(status().isNotFound())
@@ -111,7 +123,8 @@ class ParcoursControllerTest {
 
     @Test
     void getParcoursById_shouldReturn404_whenNotExists() throws Exception {
-        when(parcoursService.getParcoursById(99L)).thenThrow(new RessourceNotFoundException("Parcours not found"));
+        when(parcoursService.getParcoursById(99L))
+                .thenThrow(new RessourceNotFoundException("Parcours not found"));
 
         mockMvc.perform(get("/api/parcours/99"))
                 .andExpect(status().isNotFound())

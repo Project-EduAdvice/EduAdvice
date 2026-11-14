@@ -62,7 +62,9 @@ public class TeachingUnitService {
         // intialization for the parcours DTO
         Parcours parcours = semester.getParcours();
 
-        return new SemesterDTO(semester.getNumber(),
+        return new SemesterDTO(
+                semester.getId(),
+                semester.getNumber(),
                 new ParcoursDTO(
                         parcours.getId(),
                         parcours.getName(),

@@ -27,7 +27,9 @@ public class SemesterService {
         // intialization for the parcours DTO
         Parcours parcours = semester.getParcours();
 
-        SemesterDTO dto = new SemesterDTO(semester.getNumber(),
+        SemesterDTO dto = new SemesterDTO(
+                semester.getId(),
+                semester.getNumber(),
                 new ParcoursDTO(
                     parcours.getId(),
                     parcours.getName(),

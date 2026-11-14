@@ -75,6 +75,7 @@ public class ParcoursService {
         return parcours.getSemesters()
                 .stream()
                 .map(semester -> new SemesterDTO(
+                        semester.getId(),
                         semester.getNumber(),
                         new ParcoursDTO(
                                 parcours.getId(),

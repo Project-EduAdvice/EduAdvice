@@ -9,7 +9,9 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: none
+      # Le schéma est géré par Flyway (db/migration). Hibernate ne fait que
+      # vérifier que les entités correspondent aux tables — il ne modifie rien.
+      ddl-auto: validate
     open-in-view: false
     show-sql: false
 

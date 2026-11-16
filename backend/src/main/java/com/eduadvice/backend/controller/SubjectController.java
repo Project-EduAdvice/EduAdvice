@@ -1,6 +1,7 @@
 
 package com.eduadvice.backend.controller;
 
+import com.eduadvice.backend.dto.LearningResourceResponseDTO;
 import com.eduadvice.backend.dto.SubjectResponseDTO;
 import com.eduadvice.backend.dto.TeachingUnitResponseDTO;
 import com.eduadvice.backend.service.SubjectService;
@@ -32,5 +33,10 @@ public class SubjectController {
     @GetMapping({"/{id}/teaching-unit", "/{id}/teaching-unit/"})
     public ResponseEntity<TeachingUnitResponseDTO> getTeachingUnit(@PathVariable Long id){
         return ResponseEntity.ok(subjectService.getTeachingUnit(id));
+    }
+
+    @GetMapping({"/{id}/learning-resources", "/{id}/learning-resources/"})
+    public List<LearningResourceResponseDTO> getLearningResourcesBySubject(@PathVariable Long id){
+        return subjectService.getLearningResource(id);
     }
 }

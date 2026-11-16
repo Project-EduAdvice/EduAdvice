@@ -1,6 +1,7 @@
 
 package com.eduadvice.backend.service;
 
+import com.eduadvice.backend.dto.LearningResourceResponseDTO;
 import com.eduadvice.backend.dto.SubjectResponseDTO;
 import com.eduadvice.backend.dto.TeachingUnitResponseDTO;
 import com.eduadvice.backend.entity.Subject;
@@ -52,6 +53,23 @@ public class SubjectService {
                 teachingUnit.getCategory(),
                 teachingUnit.getEcts()
         );
+    }
+
+    public List<LearningResourceResponseDTO> getLearningResource(Long id){
+        Subject subject = subjectRepository.findById(id)
+                .orElseThrow(() -> new RessourceNotFoundException("Subject not found : " + id));
+
+        return subject.getLearningResourceList()
+                .stream()
+                .map(learningResource -> new LearningResourceResponseDTO(
+                        learningResource.getId(),
+                        learningResource.getSubject().getId(),
+                        learningResource.getTitle(),
+                        learningResource.getUrl(),
+                        learningResource.getDescription(),
+                        learningResource.getResourceType()
+                ))
+                .toList();
     }
 
     private SubjectResponseDTO convertToDTO(Subject subject) {

@@ -3,6 +3,8 @@ package com.eduadvice.backend.entity;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(
@@ -34,6 +36,9 @@ public class Subject {
 
     @Column(precision = 4, scale = 1)
     private BigDecimal ects;
+
+    @OneToMany(mappedBy = "subject")
+    List<LearningResource> learningResourceList = new ArrayList<>();
 
     public Subject() {
     }
@@ -82,5 +87,13 @@ public class Subject {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<LearningResource> getLearningResourceList() {
+        return learningResourceList;
+    }
+
+    public void setLearningResourceList(List<LearningResource> learningResourceList) {
+        this.learningResourceList = learningResourceList;
     }
 }

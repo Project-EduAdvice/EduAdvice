@@ -1,0 +1,42 @@
+# =====================================================================
+# EduAdvice — environnement de DÉVELOPPEMENT LOCAL uniquement.
+# Ne jamais utiliser ce fichier (ni ce mot de passe) en production.
+#
+# Docker Compose décrit, configure et lance plusieurs conteneurs (services)
+# en une seule commande, au lieu de longues séries de commandes `docker run`.
+#
+# Démarrer :    docker compose up -d
+# État :        docker compose ps
+# Logs :        docker compose logs -f postgres
+# Arrêter :     docker compose down        (les données sont conservées)
+# Tout effacer: docker compose down -v     (supprime aussi le volume)
+# =====================================================================
+
+services:
+  postgres:
+    # Même version majeure que la production (Neon) pour éviter les surprises.
+    image: postgres:18.6
+    container_name: eduadvice-postgres
+    restart: unless-stopped
+    environment:
+      # Ces valeurs DOIVENT correspondre aux valeurs par défaut de
+      # backend/src/main/resources/application.yaml
+      POSTGRES_DB: eduadvice
+      POSTGRES_USER: eduadvice_user
+      # Mot de passe de dev, surchargeable via la variable DB_PASSWORD.
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-eduadvice_dev}
+    ports:
+      # "port_sur_ton_mac:port_dans_le_conteneur"
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      # Volume nommé : les données survivent à l'arrêt du conteneur.
+      # Depuis PostgreSQL 18, on monte /var/lib/postgresql (et non plus .../data).
+      - postgres-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eduadvice_user -d eduadvice"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  postgres-data:

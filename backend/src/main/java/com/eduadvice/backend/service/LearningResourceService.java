@@ -3,6 +3,7 @@ package com.eduadvice.backend.service;
 
 import com.eduadvice.backend.dto.LearningResourceRequestDTO;
 import com.eduadvice.backend.dto.LearningResourceResponseDTO;
+import com.eduadvice.backend.dto.SubjectResponseDTO;
 import com.eduadvice.backend.entity.LearningResource;
 import com.eduadvice.backend.entity.Subject;
 import com.eduadvice.backend.exception.RessourceNotFoundException;
@@ -30,6 +31,22 @@ public class LearningResourceService {
         this.urlValidator = urlValidator;
     }
 
+    public List<LearningResourceResponseDTO> getAllResources(){
+        return learningResourceRepository.findAll()
+                .stream()
+                .map(this::convertToDTO)
+                .toList();
+    }
+
+    public LearningResourceResponseDTO getResourceById(Long id){
+        LearningResource learningResource = learningResourceRepository.findById(id)
+                .orElseThrow(() -> new RessourceNotFoundException(
+                        "Learning resource not found : " + id
+                ));
+
+        return convertToDTO(learningResource);
+    }
+
     public List<LearningResourceResponseDTO> getResourcesBySubject(Long subjectId) {
 
         if (!subjectRepository.existsById(subjectId)) {
@@ -42,6 +59,25 @@ public class LearningResourceService {
                 .stream()
                 .map(this::convertToDTO)
                 .toList();
+    }
+
+    public SubjectResponseDTO getSubject(Long resourceId){
+        LearningResource learningResource = learningResourceRepository.findById(resourceId)
+                .orElseThrow(() -> new RessourceNotFoundException(
+                        "Learning resource not found : " + resourceId
+                ));
+
+        Subject subject = learningResource.getSubject();
+
+        return new SubjectResponseDTO(
+                subject.getId(),
+                subject.getTeachingUnit().getId(),
+                subject.getName(),
+                subject.getDescription(),
+                subject.getContent(),
+                subject.getEcts()
+
+        );
     }
 
     @Transactional

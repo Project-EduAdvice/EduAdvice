@@ -32,14 +32,6 @@ public class LearningResourceController {
         return learningResourceService.getResourceById(id);
     }
 
-    // Get all learning resources belonging to a subject
-    @GetMapping("subject/{id}")
-    public List<LearningResourceResponseDTO> getResourcesBySubject(
-            @PathVariable Long subjectId) {
-
-        return learningResourceService.getResourcesBySubject(subjectId);
-    }
-
     @GetMapping({"/{id}/subject","{id}/subject/"})
     public ResponseEntity<SubjectResponseDTO> getSubject(@PathVariable Long id){
         return ResponseEntity.ok(learningResourceService.getSubject(id));

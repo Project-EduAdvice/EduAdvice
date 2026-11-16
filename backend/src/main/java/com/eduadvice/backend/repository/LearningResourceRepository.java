@@ -9,7 +9,5 @@ import java.util.List;
 public interface LearningResourceRepository
         extends JpaRepository<LearningResource, Long> {
 
-    List<LearningResource> findBySubjectId(Long subjectId);
-
     boolean existsBySubjectIdAndUrl(Long subjectId, String url);
 }

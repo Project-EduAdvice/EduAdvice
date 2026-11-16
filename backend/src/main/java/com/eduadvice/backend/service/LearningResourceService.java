@@ -47,20 +47,6 @@ public class LearningResourceService {
         return convertToDTO(learningResource);
     }
 
-    public List<LearningResourceResponseDTO> getResourcesBySubject(Long subjectId) {
-
-        if (!subjectRepository.existsById(subjectId)) {
-            throw new RessourceNotFoundException(
-                    "Subject not found with id: " + subjectId
-            );
-        }
-
-        return learningResourceRepository.findBySubjectId(subjectId)
-                .stream()
-                .map(this::convertToDTO)
-                .toList();
-    }
-
     public SubjectResponseDTO getSubject(Long resourceId){
         LearningResource learningResource = learningResourceRepository.findById(resourceId)
                 .orElseThrow(() -> new RessourceNotFoundException(

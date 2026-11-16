@@ -1,7 +1,9 @@
 package com.eduadvice.backend.controller;
 
+import com.eduadvice.backend.dto.LearningResourceResponseDTO;
 import com.eduadvice.backend.dto.SubjectResponseDTO;
 import com.eduadvice.backend.dto.TeachingUnitResponseDTO;
+import com.eduadvice.backend.entity.ResourceType;
 import com.eduadvice.backend.entity.TeachingUnitCategory;
 import com.eduadvice.backend.exception.RessourceNotFoundException;
 import com.eduadvice.backend.service.SubjectService;
@@ -35,6 +37,7 @@ class SubjectControllerTest {
 
     private SubjectResponseDTO subject;
     private TeachingUnitResponseDTO teachingUnit;
+    private LearningResourceResponseDTO resource;
 
     @BeforeEach
     void setUp() {
@@ -53,6 +56,15 @@ class SubjectControllerTest {
                 "Apprentissage Artificiel",
                 TeachingUnitCategory.MAJOR_1,
                 new BigDecimal("12")
+        );
+
+        resource = new LearningResourceResponseDTO(
+                1L,
+                1L,
+                "Understanding Deep Learning",
+                "https://udlbook.github.io/udlbook/",
+                "Book on deep learning",
+                ResourceType.DOCUMENT
         );
     }
 
@@ -130,5 +142,30 @@ class SubjectControllerTest {
                 .andDo(print());
 
         verify(subjectService).getTeachingUnit(1L);
+    }
+
+    @Test
+    void getResources_shouldReturnResources() throws Exception {
+        when(subjectService.getLearningResource(1L)).thenReturn(List.of(resource));
+
+        mockMvc.perform(get("/api/subjects/1/learning-resources"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[0].title").value("Understanding Deep Learning"))
+                .andDo(print());
+
+        verify(subjectService).getLearningResource(1L);
+    }
+
+    @Test
+    void getResources_shouldReturnEmptyList_whenNoRessourceExists() throws  Exception {
+        when(subjectService.getLearningResource(2L)).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/subjects/2/learning-resources"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(0))
+                .andDo(print());
+
+        verify(subjectService).getLearningResource(2L);
     }
 }

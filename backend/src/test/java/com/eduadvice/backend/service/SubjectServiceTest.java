@@ -1,5 +1,6 @@
 package com.eduadvice.backend.service;
 
+import com.eduadvice.backend.dto.LearningResourceResponseDTO;
 import com.eduadvice.backend.dto.SubjectResponseDTO;
 import com.eduadvice.backend.dto.TeachingUnitResponseDTO;
 import com.eduadvice.backend.entity.*;
@@ -23,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension .class)
+@ExtendWith(MockitoExtension.class)
 class SubjectServiceTest {
 
     @Mock
@@ -36,6 +37,7 @@ class SubjectServiceTest {
     private Semester semester1;
     private TeachingUnit teachingUnit1;
     private Subject subject1, subject2;
+    private LearningResource resource1,resource2;
 
     @BeforeEach
     void setUp() {
@@ -77,11 +79,31 @@ class SubjectServiceTest {
                 new BigDecimal("3")
         );
 
+        resource1 = new LearningResource(
+                subject1,
+                "Statistical Rethinking",
+                "https://civil.colorado.edu/~balajir/CVEN6833/bayes-resources/RM-StatRethink-Bayes.pdf",
+                "Book on statistics",
+                ResourceType.DOCUMENT
+        );
+
+        resource2 = new LearningResource(
+               subject1,
+                "The Elements of Statistical Learning",
+                "https://www.sas.upenn.edu/~fdiebold/NoHesitations/BookAdvanced.pdf",
+                "La « bible » de l'apprentissage statistique",
+                ResourceType.DOCUMENT
+        );
+
+
         semester1.setParcours(parcours1);
         teachingUnit1.setSemester(semester1);
         teachingUnit1.setSubjects(List.of(subject1, subject2));
         subject1.setTeachingUnit(teachingUnit1);
         subject2.setTeachingUnit(teachingUnit1);
+        subject1.setLearningResourceList(List.of(resource1,resource2));
+        resource1.setSubject(subject1);
+        resource2.setSubject(subject1);
     }
 
     @Test
@@ -156,6 +178,38 @@ class SubjectServiceTest {
         when(subjectRepository.findById(99L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> subjectService.getTeachingUnit(99L)).isInstanceOf(RessourceNotFoundException.class);
+
+        verify(subjectRepository).findById(99L);
+    }
+
+    @Test
+    void getLearningResources_shouldReturnResources_whenExists(){
+        when(subjectRepository.findById(1L)).thenReturn(Optional.of(subject1));
+
+        List<LearningResourceResponseDTO> result = subjectService.getLearningResource(1L);
+
+        assertThat(result).hasSize(2);
+        assertThat(result).extracting(LearningResourceResponseDTO::title).containsExactly("Statistical Rethinking","The Elements of Statistical Learning");
+
+        verify(subjectRepository).findById(1L);
+    }
+
+    @Test
+    void getLearningResources_shouldReturnEmptyList_whenNoRessourceExists(){
+        when(subjectRepository.findById(2L)).thenReturn(Optional.of(subject2));
+
+        List<LearningResourceResponseDTO> result = subjectService.getLearningResource(2L);
+
+        assertThat(result).isEmpty();
+
+        verify(subjectRepository).findById(2L);
+    }
+
+    @Test
+    void getLearningResources_shouldThrowException_whenSubjectNotFound() {
+        when(subjectRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> subjectService.getLearningResource(99L)).isInstanceOf(RessourceNotFoundException.class);
 
         verify(subjectRepository).findById(99L);
     }

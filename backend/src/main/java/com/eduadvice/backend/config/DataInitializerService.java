@@ -16,6 +16,7 @@ public class DataInitializerService {
     private final SemesterRepository semesterRepository;
     private final TeachingUnitRepository teachingUnitRepository;
     private final SubjectRepository subjectRepository;
+    private final LearningResourceRepository learningResourceRepository;
 
     // Constructor injection
     public DataInitializerService(
@@ -23,13 +24,14 @@ public class DataInitializerService {
             CareerOpportunityRepository opportunityRepository,
             SemesterRepository semesterRepository,
             TeachingUnitRepository teachingUnitRepository,
-            SubjectRepository subjectRepository
+            SubjectRepository subjectRepository, LearningResourceRepository learningResourceRepository
     ) {
         this.parcoursRepository = parcoursRepository;
         this.opportunityRepository = opportunityRepository;
         this.semesterRepository = semesterRepository;
         this.teachingUnitRepository = teachingUnitRepository;
         this.subjectRepository = subjectRepository;
+        this.learningResourceRepository = learningResourceRepository;
     }
 
     @Transactional
@@ -43,6 +45,8 @@ public class DataInitializerService {
         initializeTeachingUnits();
 
         initializeSubjects();
+
+        initializeLearningResources();
 
         initializeCareerOpportunitiesAssociations();
     }
@@ -838,6 +842,47 @@ public class DataInitializerService {
             subjectRepository.saveAll(eurSubjectsP2S);
             subjectRepository.saveAll(mineursSubjectP2S);
             subjectRepository.saveAll(professionalizationSubjectP2S);
+        }
+    }
+
+    private void initializeLearningResources() {
+
+        if (learningResourceRepository.count() == 0) {
+
+            Subject dataMining = subjectRepository.findAll()
+                    .stream()
+                    .filter(s -> s.getName().equals("Data Mining"))
+                    .findFirst()
+                    .orElseThrow();
+
+            List<LearningResource> resources = List.of(
+
+                    new LearningResource(
+                            dataMining,
+                            "Introduction to Data Mining",
+                            "https://example.com/data-mining-course",
+                            "COURSE",
+                            ResourceType.DOCUMENT
+                    ),
+
+                    new LearningResource(
+                            dataMining,
+                            "Data Mining Fundamentals",
+                            "https://example.com/data-mining-video",
+                            "VIDEO",
+                            ResourceType.VIDEO
+                    ),
+
+                    new LearningResource(
+                            dataMining,
+                            "Practical Data Mining with Python",
+                            "https://example.com/data-mining-tutorial",
+                            "TUTORIAL",
+                            ResourceType.WEBSITE
+                    )
+            );
+
+            learningResourceRepository.saveAll(resources);
         }
     }
 

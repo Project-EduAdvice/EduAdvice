@@ -3,8 +3,8 @@ package com.eduadvice.backend.controller;
 
 import com.eduadvice.backend.dto.LearningResourceRequestDTO;
 import com.eduadvice.backend.dto.LearningResourceResponseDTO;
+import com.eduadvice.backend.dto.SubjectResponseDTO;
 import com.eduadvice.backend.entity.ResourceType;
-import com.eduadvice.backend.exception.DuplicateResourceException;
 import com.eduadvice.backend.exception.RessourceNotFoundException;
 import com.eduadvice.backend.service.LearningResourceService;
 
@@ -15,19 +15,20 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import tools.jackson.databind.ObjectMapper;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 
 @WebMvcTest(LearningResourceController.class)
 class LearningResourceControllerTest {
@@ -35,155 +36,180 @@ class LearningResourceControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @MockitoBean
     private LearningResourceService learningResourceService;
 
-    private LearningResourceResponseDTO resource1;
-    private LearningResourceResponseDTO resource2;
+    private LearningResourceResponseDTO resourceResponse;
+    private LearningResourceRequestDTO resourceRequest;
+    private SubjectResponseDTO subjectResponse;
 
     @BeforeEach
     void setUp() {
-        resource1 = new LearningResourceResponseDTO(
+
+        resourceResponse = new LearningResourceResponseDTO(
                 1L,
-                10L,
-                "Java Documentation",
-                "https://docs.oracle.com/en/java/",
-                "Official Java documentation",
+                1L,
+                "Java documentation",
+                "https://docs.oracle.com/javase/",
+                "Documentation",
                 ResourceType.DOCUMENT
         );
 
-        resource2 = new LearningResourceResponseDTO(
-                2L,
-                10L,
-                "Spring Boot Tutorial",
-                "https://spring.io/guides",
-                "Spring Boot learning guides",
-                ResourceType.WEBSITE
+        resourceRequest = new LearningResourceRequestDTO(
+                1L,
+                "Java documentation",
+                "https://docs.oracle.com/javase/",
+                "Documentation",
+                ResourceType.DOCUMENT
+        );
+
+        subjectResponse = new SubjectResponseDTO(
+                1L,
+                1L,
+                "Java",
+                "Programming language",
+                "POO",
+                new BigDecimal("3")
         );
     }
 
+    // GET ALL RESOURCES
+
     @Test
-    void getResources_shouldReturn200AndResourceList() throws Exception {
+    void getAllResources_shouldReturn200() throws Exception {
 
-        when(learningResourceService.getResourcesBySubject(10L))
-                .thenReturn(List.of(resource1, resource2));
+        when(learningResourceService.getAllResources())
+                .thenReturn(List.of(resourceResponse));
 
-        mockMvc.perform(get("/api/subjects/10/learning-resources"))
+        mockMvc.perform(get("/api/learning-resources"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].title").value("Java Documentation"))
-                .andExpect(jsonPath("$[1].title").value("Spring Boot Tutorial"))
-                .andDo(print());
+                .andExpect(jsonPath("$[0].id").value(1L))
+                .andExpect(jsonPath("$[0].title").value("Java documentation"));
 
-        verify(learningResourceService).getResourcesBySubject(10L);
+        verify(learningResourceService).getAllResources();
     }
 
     @Test
-    void getResources_shouldReturnEmptyList_whenNoResourcesExist() throws Exception {
+    void getAllResources_shouldReturnEmptyList_whenNoResourcesExist()
+            throws Exception {
 
-        when(learningResourceService.getResourcesBySubject(10L))
+        when(learningResourceService.getAllResources())
                 .thenReturn(List.of());
 
-        mockMvc.perform(get("/api/subjects/10/learning-resources"))
+        mockMvc.perform(get("/api/learning-resources"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(0))
-                .andDo(print());
+                .andExpect(jsonPath("$").isEmpty());
 
-        verify(learningResourceService).getResourcesBySubject(10L);
+        verify(learningResourceService).getAllResources();
+    }
+
+    // GET RESOURCE BY ID
+
+    @Test
+    void getResourceById_shouldReturn200_whenResourceExists()
+            throws Exception {
+
+        when(learningResourceService.getResourceById(1L))
+                .thenReturn(resourceResponse);
+
+        mockMvc.perform(get("/api/learning-resources/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.title").value("Java documentation"));
+
+        verify(learningResourceService).getResourceById(1L);
     }
 
     @Test
-    void getResources_shouldReturn404_whenSubjectDoesNotExist() throws Exception {
+    void getResourceById_shouldReturn404_whenResourceNotFound()
+            throws Exception {
 
-        when(learningResourceService.getResourcesBySubject(99L))
-                .thenThrow(new RessourceNotFoundException("Subject not found"));
+        when(learningResourceService.getResourceById(99L))
+                .thenThrow(new RessourceNotFoundException(
+                        "Learning resource not found"
+                ));
 
-        mockMvc.perform(get("/api/subjects/99/learning-resources"))
-                .andExpect(status().isNotFound())
-                .andDo(print());
+        mockMvc.perform(get("/api/learning-resources/99"))
+                .andExpect(status().isNotFound());
 
-        verify(learningResourceService).getResourcesBySubject(99L);
+        verify(learningResourceService).getResourceById(99L);
+    }
+
+    // GET SUBJECT OF A RESOURCE
+
+    @Test
+    void getSubject_shouldReturn200_whenSubjectExists()
+            throws Exception {
+
+        when(learningResourceService.getSubject(1L))
+                .thenReturn(subjectResponse);
+
+        mockMvc.perform(get("/api/learning-resources/1/subject"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.name").value("Java"));
+
+        verify(learningResourceService).getSubject(1L);
     }
 
     @Test
-    void createResource_shouldReturn201_whenResourceIsCreated() throws Exception {
+    void getSubject_shouldReturn404_whenResourceNotFound()
+            throws Exception {
 
-        when(learningResourceService.createResource(
-                eq(10L), any(LearningResourceRequestDTO.class)))
-                .thenReturn(resource1);
+        when(learningResourceService.getSubject(99L))
+                .thenThrow(new RessourceNotFoundException(
+                        "Learning resource not found"
+                ));
 
-        String requestBody = """
-                {
-                    "title": "Java Documentation",
-                    "url": "https://docs.oracle.com/en/java/",
-                    "description": "Official Java documentation",
-                    "resourceType": "DOCUMENT"
-                }
-                """;
+        mockMvc.perform(get("/api/learning-resources/99/subject"))
+                .andExpect(status().isNotFound());
 
-        mockMvc.perform(post("/api/subjects/10/learning-resources")
+        verify(learningResourceService).getSubject(99L);
+    }
+
+    // CREATE RESOURCE
+
+    @Test
+    void createResource_shouldReturn201_whenResourceIsCreated()
+            throws Exception {
+
+        when(learningResourceService.createResource(any(
+                LearningResourceRequestDTO.class
+        ))).thenReturn(resourceResponse);
+
+        mockMvc.perform(post("/api/learning-resources")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
+                        .content(objectMapper.writeValueAsString(resourceRequest)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.subjectId").value(10))
-                .andExpect(jsonPath("$.title").value("Java Documentation"))
-                .andExpect(jsonPath("$.resourceType").value("DOCUMENT"))
-                .andDo(print());
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.title").value("Java documentation"));
 
-        verify(learningResourceService).createResource(
-                eq(10L), any(LearningResourceRequestDTO.class));
+        verify(learningResourceService).createResource(any(
+                LearningResourceRequestDTO.class
+        ));
     }
 
     @Test
-    void createResource_shouldReturn404_whenSubjectDoesNotExist() throws Exception {
+    void createResource_shouldReturn404_whenSubjectNotFound()
+            throws Exception {
 
-        when(learningResourceService.createResource(
-                eq(99L), any(LearningResourceRequestDTO.class)))
-                .thenThrow(new RessourceNotFoundException("Subject not found"));
+        when(learningResourceService.createResource(any(
+                LearningResourceRequestDTO.class
+        ))).thenThrow(new RessourceNotFoundException(
+                "Subject not found"
+        ));
 
-        String requestBody = """
-                {
-                    "title": "Java Documentation",
-                    "url": "https://docs.oracle.com/en/java/",
-                    "description": "Official Java documentation",
-                    "resourceType": "DOCUMENT"
-                }
-                """;
-
-        mockMvc.perform(post("/api/subjects/99/learning-resources")
+        mockMvc.perform(post("/api/learning-resources")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
-                .andExpect(status().isNotFound())
-                .andDo(print());
+                        .content(objectMapper.writeValueAsString(resourceRequest)))
+                .andExpect(status().isNotFound());
 
-        verify(learningResourceService).createResource(
-                eq(99L), any(LearningResourceRequestDTO.class));
-    }
-
-    @Test
-    void createResource_shouldReturn409_whenResourceAlreadyExists() throws Exception {
-
-        when(learningResourceService.createResource(
-                eq(10L), any(LearningResourceRequestDTO.class)))
-                .thenThrow(new DuplicateResourceException("Resource already exists"));
-
-        String requestBody = """
-                {
-                    "title": "Java Documentation",
-                    "url": "https://docs.oracle.com/en/java/",
-                    "description": "Official Java documentation",
-                    "resourceType": "DOCUMENT"
-                }
-                """;
-
-        mockMvc.perform(post("/api/subjects/10/learning-resources")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
-                .andExpect(status().isConflict())
-                .andDo(print());
-
-        verify(learningResourceService).createResource(
-                eq(10L), any(LearningResourceRequestDTO.class));
+        verify(learningResourceService).createResource(any(
+                LearningResourceRequestDTO.class
+        ));
     }
 }
+

@@ -849,39 +849,220 @@ public class DataInitializerService {
 
         if (learningResourceRepository.count() == 0) {
 
-            Subject dataMining = subjectRepository.findAll()
-                    .stream()
+            List<Subject> subjects = subjectRepository.findAll();
+
+            Subject apprentissageStatistique = subjects.stream()
+                    .filter(s -> s.getName().equals("Apprentissage statistique"))
+                    .findFirst().orElseThrow();
+
+            Subject deepLearning = subjects.stream()
+                    .filter(s -> s.getName().equals("Deep Learning"))
+                    .findFirst().orElseThrow();
+
+            Subject scienceDonnees = subjects.stream()
+                    .filter(s -> s.getName().equals("Science des données numériques"))
+                    .findFirst().orElseThrow();
+
+            Subject statistiqueExploratoire = subjects.stream()
+                    .filter(s -> s.getName().equals("Statistique exploratoire multidimensionnelle"))
+                    .findFirst().orElseThrow();
+
+            Subject basesDonnees = subjects.stream()
+                    .filter(s -> s.getName().equals("Bases de données avancées"))
+                    .findFirst().orElseThrow();
+
+            Subject dataMining = subjects.stream()
                     .filter(s -> s.getName().equals("Data Mining"))
-                    .findFirst()
-                    .orElseThrow();
+                    .findFirst().orElseThrow();
+
+            Subject dataWarehouse = subjects.stream()
+                    .filter(s -> s.getName().equals("Data Warehouse"))
+                    .findFirst().orElseThrow();
+
+            Subject informatiqueDecisionnelle = subjects.stream()
+                    .filter(s -> s.getName().equals("Informatique Décisionnelle"))
+                    .findFirst().orElseThrow();
+
+
+            // P2S - PROGRAMMING SUBJECTS
+
+            Subject javascriptAvance = subjects.stream()
+                    .filter(s -> s.getName().equals("Développement JavaScript avancé et ubiquitaire"))
+                    .findFirst().orElseThrow();
+
+            Subject environnementsDeveloppement = subjects.stream()
+                    .filter(s -> s.getName().equals("Environnements de développements libres"))
+                    .findFirst().orElseThrow();
+
+            Subject methodologiesLangages = subjects.stream()
+                    .filter(s -> s.getName().equals("Méthodologies et langages avancés"))
+                    .findFirst().orElseThrow();
+
+            Subject programmationModulaire = subjects.stream()
+                    .filter(s -> s.getName().equals("Programmation modulaire et résiliente"))
+                    .findFirst().orElseThrow();
+
+
+            // P2S - SPECIFICATION SUBJECTS
+
+            Subject programmesPreuves = subjects.stream()
+                    .filter(s -> s.getName().equals("Programmes et preuves"))
+                    .findFirst().orElseThrow();
+
+            Subject reseauxPetri = subjects.stream()
+                    .filter(s -> s.getName().equals("Réseaux de Petri de haut niveau"))
+                    .findFirst().orElseThrow();
+
+            Subject specificationVerification = subjects.stream()
+                    .filter(s -> s.getName().equals("Spécification et vérification de systèmes complexes"))
+                    .findFirst().orElseThrow();
+
+            Subject sureteSecurite = subjects.stream()
+                    .filter(s -> s.getName().equals("Sûreté et sécurité"))
+                    .findFirst().orElseThrow();
+
 
             List<LearningResource> resources = List.of(
 
+                    // AI SUBJECTS
+
                     new LearningResource(
-                            dataMining,
-                            "Introduction to Data Mining",
-                            "https://example.com/data-mining-course",
+                            apprentissageStatistique,
+                            "Statistical Learning",
+                            "https://www.statlearning.com/",
                             "COURSE",
+                            ResourceType.WEBSITE
+                    ),
+
+                    new LearningResource(
+                            deepLearning,
+                            "Deep Learning Specialization",
+                            "https://www.deeplearning.ai/courses/deep-learning-specialization/",
+                            "COURSE",
+                            ResourceType.WEBSITE
+                    ),
+
+                    new LearningResource(
+                            scienceDonnees,
+                            "Python Data Science Handbook",
+                            "https://jakevdp.github.io/PythonDataScienceHandbook/",
+                            "TUTORIAL",
+                            ResourceType.DOCUMENT
+                    ),
+
+                    new LearningResource(
+                            statistiqueExploratoire,
+                            "Multivariate Statistical Analysis",
+                            "https://online.stat.psu.edu/stat505/",
+                            "COURSE",
+                            ResourceType.WEBSITE
+                    ),
+
+
+                    // DATA SUBJECTS
+
+                    new LearningResource(
+                            basesDonnees,
+                            "PostgreSQL Documentation",
+                            "https://www.postgresql.org/docs/",
+                            "DOCUMENTATION",
                             ResourceType.DOCUMENT
                     ),
 
                     new LearningResource(
                             dataMining,
-                            "Data Mining Fundamentals",
-                            "https://example.com/data-mining-video",
-                            "VIDEO",
-                            ResourceType.VIDEO
+                            "Introduction to Data Mining",
+                            "https://www-users.cse.umn.edu/~kumar001/dmbook/index.php",
+                            "BOOK",
+                            ResourceType.DOCUMENT
                     ),
 
                     new LearningResource(
-                            dataMining,
-                            "Practical Data Mining with Python",
-                            "https://example.com/data-mining-tutorial",
+                            dataWarehouse,
+                            "Data Warehousing Fundamentals",
+                            "https://www.ibm.com/think/topics/data-warehouse",
+                            "ARTICLE",
+                            ResourceType.WEBSITE
+                    ),
+
+                    new LearningResource(
+                            informatiqueDecisionnelle,
+                            "Microsoft Power BI Learning",
+                            "https://learn.microsoft.com/en-us/training/powerplatform/power-bi/",
                             "TUTORIAL",
+                            ResourceType.WEBSITE
+                    ),
+
+                    // P2S - PROGRAMMING SUBJECTS
+
+                    new LearningResource(
+                            javascriptAvance,
+                            "JavaScript.info - The Modern JavaScript Tutorial",
+                            "https://javascript.info/",
+                            "TUTORIAL",
+                            ResourceType.WEBSITE
+                    ),
+
+                    new LearningResource(
+                            environnementsDeveloppement,
+                            "The Linux Command Line",
+                            "https://linuxcommand.org/tlcl.php",
+                            "BOOK",
+                            ResourceType.DOCUMENT
+                    ),
+
+                    new LearningResource(
+                            methodologiesLangages,
+                            "Programming Languages - Stanford University",
+                            "https://web.stanford.edu/class/cs242/",
+                            "COURSE",
+                            ResourceType.WEBSITE
+                    ),
+
+                    new LearningResource(
+                            programmationModulaire,
+                            "Microservices - Martin Fowler",
+                            "https://martinfowler.com/articles/microservices.html",
+                            "ARTICLE",
+                            ResourceType.WEBSITE
+                    ),
+
+
+                    // P2S - SPECIFICATION SUBJECTS
+
+                    new LearningResource(
+                            programmesPreuves,
+                            "Software Foundations - Logical Foundations",
+                            "https://softwarefoundations.cis.upenn.edu/lf-current/index.html",
+                            "BOOK",
+                            ResourceType.DOCUMENT
+                    ),
+
+                    new LearningResource(
+                            reseauxPetri,
+                            "Petri Nets World",
+                            "https://www.informatik.uni-hamburg.de/TGI/PetriNets/",
+                            "DOCUMENTATION",
+                            ResourceType.WEBSITE
+                    ),
+
+                    new LearningResource(
+                            specificationVerification,
+                            "Learn TLA+",
+                            "https://learntla.com/",
+                            "TUTORIAL",
+                            ResourceType.WEBSITE
+                    ),
+
+                    new LearningResource(
+                            sureteSecurite,
+                            "OWASP Top 10",
+                            "https://owasp.org/www-project-top-ten/",
+                            "DOCUMENTATION",
                             ResourceType.WEBSITE
                     )
             );
-
+            
             learningResourceRepository.saveAll(resources);
         }
     }

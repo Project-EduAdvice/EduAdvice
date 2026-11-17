@@ -1,6 +1,8 @@
 
 package com.eduadvice.backend.exception;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.eduadvice.backend.dto.ErrorResponseDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -13,6 +15,9 @@ import java.time.LocalDateTime;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    private static final Logger log =
+            LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     // Requested resource does not exist
     @ExceptionHandler(RessourceNotFoundException.class)
@@ -79,5 +84,25 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    // Unexpected exceptions: HTTP 500
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponseDTO> handleInternalError(
+            Exception ex,
+            HttpServletRequest request) {
+
+        log.error("Unexpected error on endpoint {}",
+                request.getRequestURI(), ex);
+
+        ErrorResponseDTO error = new ErrorResponseDTO(
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
+                "Une erreur interne est survenue.",
+                request.getRequestURI(),
+                LocalDateTime.now()
+        );
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
 }

@@ -41,9 +41,8 @@ public class LearningResourceController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public LearningResourceResponseDTO createResource(
-            @PathVariable Long subjectId,
             @RequestBody LearningResourceRequestDTO request) {
 
-        return learningResourceService.createResource(subjectId, request);
+        return learningResourceService.createResource(request);
     }
 }

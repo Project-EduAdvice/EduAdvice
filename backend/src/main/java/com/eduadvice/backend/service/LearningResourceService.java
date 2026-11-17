@@ -68,18 +68,17 @@ public class LearningResourceService {
 
     @Transactional
     public LearningResourceResponseDTO createResource(
-            Long subjectId,
             LearningResourceRequestDTO request) {
 
-        Subject subject = subjectRepository.findById(subjectId)
+        Subject subject = subjectRepository.findById(request.subjectId())
                 .orElseThrow(() -> new RessourceNotFoundException(
-                        "Subject not found with id: " + subjectId
+                        "Subject not found with id: " + request.subjectId()
                 ));
 
         urlValidator.validate(request.url());
 
         if (learningResourceRepository.existsBySubjectIdAndUrl(
-                subjectId, request.url().trim())) {
+                request.subjectId(), request.url().trim())) {
             throw new DuplicateResourceException(
                     "This URL already exists for this subject"
             );

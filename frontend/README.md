@@ -1,155 +1,81 @@
-# EduAdvice — Frontend
+# EduAdvice – Frontend
 
-Application frontend du projet **EduAdvice**, développée avec React et Vite.
+Interface web de la plateforme **EduAdvice** : présentation des parcours universitaires (Master Informatique, Université Sorbonne Paris Nord – parcours P2S et EI2D), de leurs semestres, unités d'enseignement, matières, ressources et débouchés.
 
-## Technologies utilisées
+## Technologies
 
-- **React 19** — bibliothèque JavaScript pour la création d'interfaces utilisateur.
-- **Vite 8** — outil de développement et de compilation.
-- **Tailwind CSS 4** — framework CSS pour la mise en forme.
-- **Oxlint** — outil d'analyse statique et de qualité du code.
-- **Node.js** et **npm** — environnement d'exécution et gestionnaire de dépendances.
+- React 19 + TypeScript
+- Vite 8
+- Tailwind CSS v4
+- React Router v7 (`react-router-dom`)
+- Axios (appels API)
+- lucide-react (icônes)
+- Oxlint (linter)
 
 ## Prérequis
 
-Avant de commencer, assurez-vous d'avoir installé :
-
-- Node.js 24 LTS (version 24.x).
-- npm (fourni avec Node.js).
-
-Vérifier les versions installées :
+- Node.js 24 (voir `.nvmrc`)
+- Backend EduAdvice lancé en local (Spring Boot, port 8080) pour les appels API
 
 ```bash
-node -v
-npm -v
-```
-## Utiliser la même version de Node.js
-
-Le fichier .nvmrc, situé à la racine du dossier frontend/, définit la version de Node.js utilisée par le projet.
-
-Pour installer et activer automatiquement cette version avec NVM, exécuter depuis le dossier frontend/ :
-
-```bash
-nvm install
 nvm use
 ```
+
 ## Installation
-
-Depuis la racine du dépôt EduAdvice, accéder au dossier frontend :
-
-```bash
-cd frontend
-```
-
-Installer les dépendances du projet :
 
 ```bash
 npm ci
-```
-
-Cette commande installe les dépendances à partir du fichier `package-lock.json` afin de garantir un environnement cohérent pour tous les membres de l'équipe.
-
-## Lancer le serveur de développement
-
-```bash
-npm run dev
-```
-
-Le serveur de développement est généralement accessible à l'adresse :
-
-```text
-http://localhost:5173/
-```
-
-## Compiler le projet
-
-Pour générer la version de production :
-
-```bash
-npm run build
-```
-
-Les fichiers générés sont placés dans le dossier `dist/`.
-
-## Vérification de la qualité du code
-
-Pour lancer l'analyse statique avec Oxlint :
-
-```bash
-npm run lint
+cp .env.example .env
 ```
 
 ## Variables d'environnement
 
-Créer un fichier `.env` à partir du fichier `.env.example` :
+| Variable            | Description                | Valeur par défaut           |
+| ------------------- | -------------------------- | --------------------------- |
+| `VITE_API_BASE_URL` | URL de base de l'API REST  | `http://localhost:8080/api` |
 
-```bash
-cp .env.example .env
-```
+Le fichier `.env` n'est jamais versionné. Seul `.env.example` l'est.
 
-Configurer ensuite l'URL de l'API backend :
+## Scripts
 
-```env
-VITE_API_BASE_URL=http://localhost:8080/api
-```
-
-Ne jamais versionner les fichiers `.env` contenant des configurations locales ou des informations sensibles.
+| Commande          | Rôle                                              |
+| ----------------- | ------------------------------------------------- |
+| `npm run dev`     | Lance le serveur de développement                 |
+| `npm run build`   | Vérifie les types (`tsc -b`) et construit le site |
+| `npm run lint`    | Analyse le code avec Oxlint                       |
+| `npm run preview` | Prévisualise le build de production               |
 
 ## Structure du projet
 
 ```text
-frontend/
-├── public/
-├── src/
-│   ├── assets/
-│   ├── components/
-│   ├── hooks/
-│   ├── layouts/
-│   ├── pages/
-│   ├── services/
-│   ├── utils/
-│   ├── App.jsx
-│   ├── App.css
-│   ├── index.css
-│   └── main.jsx
-├── .env.example
-├── .gitignore
-├── index.html
-├── package.json
-├── package-lock.json
-└── vite.config.js
+src/
+├── components/
+│   ├── cards/        # Cartes (ex. Parcours)
+│   └── layout/       # Header, Footer, PageShell
+├── pages/            # Pages (Placeholder, NotFound)
+├── services/         # Appels API (Axios) – à venir
+├── App.tsx           # Page d'accueil
+├── router.tsx        # Routes (React Router)
+├── main.tsx          # Point d'entrée
+└── styles.css        # Design system (tokens, utilitaires Tailwind)
 ```
 
-## Scripts disponibles
+## Routes
 
-| Commande | Description |
-|---|---|
-| `npm run dev` | Lance le serveur de développement. |
-| `npm run build` | Compile le projet pour la production. |
-| `npm run lint` | Vérifie la qualité du code avec Oxlint. |
-| `npm run preview` | Prévisualise la version compilée. |
+| Chemin        | Page                  |
+| ------------- | --------------------- |
+| `/`           | Accueil               |
+| `/programmes` | Programmes            |
+| `/metiers`    | Métiers et débouchés  |
+| `/apropos`    | À propos              |
+| `*`           | Page 404              |
 
----
+## Conventions
 
-*EduAdvice — Projet universitaire de Master P2S.*
+- Branches : `feat/frontend/<nom>`
+- Commits : `feat(frontend): description`
+- Lint obligatoire avant chaque PR : `npm run lint && npm run build`
 
+## API
 
-
-
-
-# React + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+Le frontend consomme l'API décrite dans `docs/api/api-contract.md` (préfixe `/api`, format JSON).

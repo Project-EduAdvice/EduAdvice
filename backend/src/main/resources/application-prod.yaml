@@ -1,0 +1,32 @@
+# =====================================================================
+# Profil PRODUCTION — chargé en plus de application.yaml quand
+# SPRING_PROFILES_ACTIVE=prod. Seules les différences sont écrites ici.
+# =====================================================================
+
+spring:
+  datasource:
+    hikari:
+      # Petite instance (512 Mo) + offre gratuite Neon : peu de connexions.
+      maximum-pool-size: 5
+      # Neon suspend la base après 5 min : on laisse le temps du réveil.
+      connection-timeout: 30000
+
+server:
+  # Render termine le HTTPS devant l'application et transmet la requête
+  # en HTTP avec des en-têtes X-Forwarded-* : on les prend en compte.
+  forward-headers-strategy: framework
+  error:
+    # Ne jamais renvoyer de détails techniques aux clients.
+    include-stacktrace: never
+    include-message: never
+
+management:
+  endpoint:
+    health:
+      # Le public voit seulement {"status":"UP"}, pas l'état interne.
+      show-details: never
+
+logging:
+  level:
+    root: INFO
+    com.eduadvice: INFO

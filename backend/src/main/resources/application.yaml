@@ -1,3 +1,10 @@
+# =====================================================================
+# Configuration COMMUNE à tous les environnements.
+# Les valeurs propres à la production sont dans application-prod.yaml,
+# activé par la variable d'environnement SPRING_PROFILES_ACTIVE=prod.
+# Aucun secret ici : ils viennent des variables d'environnement.
+# =====================================================================
+
 spring:
   application:
     name: backend
@@ -16,4 +23,17 @@ spring:
     show-sql: false
 
 server:
-  port: 8080
+  # Les plateformes (Render, etc.) imposent le port via la variable PORT.
+  port: ${PORT:8080}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        # On n'expose QUE ce qui est nécessaire (moindre privilège).
+        include: health,info
+  endpoint:
+    health:
+      # /actuator/health/liveness et /actuator/health/readiness
+      probes:
+        enabled: true

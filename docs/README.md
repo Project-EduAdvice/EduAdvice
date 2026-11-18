@@ -8,6 +8,7 @@
 ## Architecture
 - [Architecture générale](architecture/system-architecture.md)
 - [Architecture backend](architecture/backend-architecture.md)
+- [Architecture de déploiement](architecture/deployment-architecture.md)
 
 ## Base de données
 - [Conception de la base de données](database/database-design.md)

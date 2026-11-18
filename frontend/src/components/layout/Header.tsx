@@ -1,13 +1,49 @@
-import { Link, NavLink } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { GraduationCap, Menu, X } from "lucide-react";
 import { useState } from "react";
 
 const nav = [
-  { to: "/", label: "Accueil" },
-  { to: "/programmes", label: "Programmes" },
-  { to: "/metiers", label: "Métiers" },
-  { to: "/apropos", label: "À propos" },
-] as const;
+  { to: "/", label: "Accueil", isActive: (path: string, hash: string) => path === "/" && hash !== "#formations" },
+  {
+    to: "/#formations",
+    label: "Formations",
+    isActive: (path: string, hash: string) =>
+      (path === "/" && hash === "#formations") || path.startsWith("/programmes") || path.startsWith("/ue"),
+  },
+  { to: "/metiers", label: "Métiers", isActive: (path: string) => path.startsWith("/metiers") },
+];
+
+const styles = {
+  desktop: {
+    base: "rounded-full px-4 py-2 text-sm font-medium transition-colors hover:text-foreground",
+    active: "bg-secondary text-foreground",
+    inactive: "text-muted-foreground",
+  },
+  mobile: {
+    base: "block rounded-lg px-3 py-2 text-sm font-medium",
+    active: "bg-secondary",
+    inactive: "",
+  },
+};
+
+function NavLinks({ variant, onNavigate }: { variant: keyof typeof styles; onNavigate?: () => void }) {
+  const { pathname, hash } = useLocation();
+  const s = styles[variant];
+  return nav.map((n) => {
+    const active = n.isActive(pathname, hash);
+    return (
+      <Link
+        key={n.to}
+        to={n.to}
+        onClick={onNavigate}
+        aria-current={active ? "page" : undefined}
+        className={`${s.base} ${active ? s.active : s.inactive}`}
+      >
+        {n.label}
+      </Link>
+    );
+  });
+}
 
 export function Header() {
   const [open, setOpen] = useState(false);
@@ -19,27 +55,13 @@ export function Header() {
           EduAdvice
         </Link>
         <nav className="hidden items-center gap-1 md:flex" aria-label="Main">
-          {nav.map((n) => (
-            <NavLink key={n.to} to={n.to} end={n.to === "/"}
-              className={({ isActive }) =>
-                `rounded-full px-4 py-2 text-sm font-medium transition-colors hover:text-foreground ${isActive ? "bg-secondary text-foreground" : "text-muted-foreground"}`
-              }>
-              {n.label}
-            </NavLink>
-          ))}
+          <NavLinks variant="desktop" />
         </nav>
         <button className="rounded-lg p-2 md:hidden" onClick={() => setOpen(!open)} aria-label="Ouvrir ou fermer le menu" aria-expanded={open}>{open ? <X /> : <Menu />}</button>
       </div>
       {open && (
         <nav className="border-t border-border px-4 py-3 md:hidden" aria-label="Mobile">
-          {nav.map((n) => (
-            <NavLink key={n.to} to={n.to} end={n.to === "/"} onClick={() => setOpen(false)}
-              className={({ isActive }) =>
-                `block rounded-lg px-3 py-2 text-sm font-medium ${isActive ? "bg-secondary" : ""}`
-              }>
-              {n.label}
-            </NavLink>
-          ))}
+          <NavLinks variant="mobile" onNavigate={() => setOpen(false)} />
         </nav>
       )}
     </header>

@@ -1,28 +1,49 @@
-import { useNavigate } from "react-router-dom";
-import { Search } from "lucide-react";
-import { useState } from "react";
+import { Search, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { PageShell, SectionTitle } from "./components/layout/PageShell";
-import { Parcours, type Program } from "./components/cards/Parcours";
+import { Parcours } from "./components/cards/Parcours";
+import { EmptyState, ErrorState, LoadingState } from "./components/states";
+import { useAsync } from "./hooks/useAsync";
+import { getErrorMessage } from "./services/api";
+import { getParcoursList } from "./services/parcours";
+import type { Parcours as ParcoursData } from "./services/types";
+import { normalize } from "./utils/text";
 
-// À remplacer par tes deux vrais parcours (puis, plus tard, par les données du backend)
-const PROGRAMS: Program[] = [
-  {
-    id: 1,
-    level: "Master",
-    mention: "Informatique",
-    name: "P2S",
-    description: "Parcours Programmation Sûreté et Sécurité.",
-    establishment: "Université Sorbonne Paris Nord",
-  },
-  {
-    id: 2,
-    level: "Master",
-    mention: "Informatique",
-    name: "EI2D",
-    description: "Parcours Exploration informatique des données et décisionnel.",
-    establishment: "Université Sorbonne Paris Nord",
-  },
-];
+// Cartes des parcours, filtrées par la recherche (nom, description, mention)
+function ParcoursList({ parcours, term, onReset }: { parcours: ParcoursData[]; term: string; onReset: () => void }) {
+  if (parcours.length === 0) return <EmptyState>Aucun parcours disponible pour le moment.</EmptyState>;
+
+  const search = normalize(term.trim());
+  const shown = search
+    ? parcours.filter((p) => normalize([p.name, p.description ?? "", p.mention ?? ""].join(" ")).includes(search))
+    : parcours;
+
+  return (
+    <>
+      {search && (
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <p role="status" className="text-sm text-muted-foreground">
+            {shown.length} résultat{shown.length > 1 ? "s" : ""} pour « {term.trim()} »
+          </p>
+          <button type="button" onClick={onReset} className="flex items-center gap-1 text-sm font-semibold text-accent hover:underline">
+            <X className="size-4" aria-hidden="true" />
+            Réinitialiser
+          </button>
+        </div>
+      )}
+      {shown.length === 0 ? (
+        <EmptyState>Aucun parcours ne correspond à votre recherche.</EmptyState>
+      ) : (
+        <div className="grid gap-5 sm:grid-cols-2">
+          {shown.map((p) => (
+            <Parcours key={p.id} p={p} />
+          ))}
+        </div>
+      )}
+    </>
+  );
+}
 
 const STEPS: [string, string][] = [
   ["Choisissez votre parcours", "Trouvez votre parcours par son nom."],
@@ -33,7 +54,15 @@ const STEPS: [string, string][] = [
 
 export default function App() {
   const [term, setTerm] = useState("");
-  const navigate = useNavigate();
+  const { state, reload } = useAsync(getParcoursList);
+  const { hash } = useLocation();
+
+  // Une fois les cartes chargées, on recale la page sur la section demandée (/#formations)
+  useEffect(() => {
+    if (state.status === "success" && hash === "#formations") {
+      document.getElementById("formations")?.scrollIntoView();
+    }
+  }, [state.status, hash]);
 
   return (
     <PageShell>
@@ -48,8 +77,8 @@ export default function App() {
           className="flex gap-2 rounded-2xl border border-border bg-card p-2 shadow-soft"
           onSubmit={(e) => {
             e.preventDefault();
-            const q = term.trim();
-            navigate(q ? `/programmes?q=${encodeURIComponent(q)}` : "/programmes");
+            // Les cartes se filtrent déjà en tapant : on descend simplement jusqu'à elles
+            document.getElementById("formations")?.scrollIntoView();
           }}
         >
           <Search className="ml-2 mt-2.5 size-5 shrink-0 text-muted-foreground" />
@@ -85,13 +114,11 @@ export default function App() {
         </ol>
       </section>
 
-      <section className="mt-24">
+      <section id="formations" className="mt-24 scroll-mt-20">
         <SectionTitle eyebrow="Formations" title="Nos parcours de formation" />
-        <div className="grid gap-5 sm:grid-cols-2">
-          {PROGRAMS.map((p) => (
-            <Parcours key={p.id} p={p} />
-          ))}
-        </div>
+        {state.status === "loading" && <LoadingState label="Chargement des parcours…" />}
+        {state.status === "error" && <ErrorState message={getErrorMessage(state.error)} onRetry={reload} />}
+        {state.status === "success" && <ParcoursList parcours={state.data} term={term} onReset={() => setTerm("")} />}
       </section>
     </PageShell>
   );

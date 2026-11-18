@@ -1,0 +1,22 @@
+# Fichiers exclus du "contexte de build" envoyé à Docker.
+# Moins de fichiers = build plus rapide, et aucun secret local copié dans l'image.
+
+target/
+.mvn/wrapper/maven-wrapper.jar
+
+# Secrets et configuration locale
+.env
+.env.*
+application-local.y*ml
+application-dev.y*ml
+
+# IDE / OS
+.idea/
+.vscode/
+*.iml
+.DS_Store
+
+# Divers
+HELP.md
+Dockerfile
+.dockerignore

@@ -129,10 +129,14 @@ class ParcoursServiceTest {
         List<CareerOpportunityDTO> result = parcoursService.getCareerOpportunities(1L);
 
         assertThat(result).hasSize(2);
-        assertThat(result).extracting(CareerOpportunityDTO::title).containsExactly("Data Scientist", "Data Engineer");
-        assertThat(result.get(0)).extracting(CareerOpportunityDTO::sector).isEqualTo("Data");
-        assertThat(result.get(1)).extracting(CareerOpportunityDTO::sector).isEqualTo("Data");
-        assertThat(result.get(0)).extracting(CareerOpportunityDTO::required_skills).isEqualTo("Python, Machine Learning, Statistics");
+        // Les débouchés viennent d'un Set (HashSet) : l'ordre n'est pas garanti.
+        assertThat(result).extracting(CareerOpportunityDTO::title).containsExactlyInAnyOrder("Data Scientist", "Data Engineer");
+        assertThat(result).extracting(CareerOpportunityDTO::sector).containsOnly("Data");
+        assertThat(result)
+                .filteredOn(career -> career.title().equals("Data Scientist"))
+                .singleElement()
+                .extracting(CareerOpportunityDTO::required_skills)
+                .isEqualTo("Python, Machine Learning, Statistics");
 
         verify(parcoursRepository).findById(1L);
     }

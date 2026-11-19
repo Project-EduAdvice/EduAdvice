@@ -24,8 +24,8 @@ Le modèle d'EduAdvice repose sur six entités principales.
 | --- | --- |
 | PARCOURS | Représente une formation universitaire proposée par un établissement. Elle contient les informations générales permettant de présenter et d'identifier la formation. |
 | SEMESTERS | Représente les semestres qui composent un parcours universitaire. Chaque semestre possède un numéro et appartient à un seul parcours. |
-| TEACHING_UNITS | Représente les unités d'enseignement (UE) qui composent un semestre. Une UE correspond à un enseignement ou à un ensemble pédagogique identifié, possédant notamment un nom, une catégorie et un nombre de crédits ECTS. |
-| SUBJECTS | Représente les notions et les thèmes abordés au sein d'une unité d'enseignement. Par exemple, une UE intitulée « Algebra 1 » peut aborder la théorie des ensembles, le raisonnement logique et les démonstrations mathématiques. |
+| TEACHING_UNITS | 	Représente les unités d'enseignement (UE) qui composent un semestre. Une UE possède notamment un nom, une catégorie et un nombre de crédits ECTS. |
+| SUBJECTS | Représente les matières qui vont être abordés au sein d'une unité d'enseignement. Un sujet possède un nom, une description, un contenu et un nombre de crédits ECTS. |
 | LEARNING_RESOURCES | Représente les ressources pédagogiques associées aux notions étudiées : documents, vidéos, exercices, sites web ou outils. |
 | CAREER_OPPORTUNITIES | Représente les métiers et les débouchés professionnels associés à un parcours universitaire. |
 
@@ -34,10 +34,11 @@ Le modèle d'EduAdvice repose sur six entités principales.
 ```mermaid
 erDiagram
     PARCOURS ||--o{ SEMESTERS : contient
-    PARCOURS ||--o{ CAREER_OPPORTUNITIES : ouvre_vers
     SEMESTERS ||--o{ TEACHING_UNITS : regroupe
     TEACHING_UNITS ||--o{ SUBJECTS : aborde
     SUBJECTS ||--o{ LEARNING_RESOURCES : reference
+    PARCOURS ||--o{ PARCOURS_CAREER_OPPORTUNITIES : associe
+    CAREER_OPPORTUNITIES ||--o{ PARCOURS_CAREER_OPPORTUNITIES : associe
 ```
 
 ## Modèle logique (MLD)
@@ -50,7 +51,8 @@ erDiagram
     SEMESTERS ||--o{ TEACHING_UNITS : contains
     TEACHING_UNITS ||--o{ SUBJECTS : covers
     SUBJECTS ||--o{ LEARNING_RESOURCES : references
-    PARCOURS ||--o{ CAREER_OPPORTUNITIES : leads_to
+    PARCOURS ||--o{ PARCOURS_CAREER_OPPORTUNITIES : associated_with
+    CAREER_OPPORTUNITIES ||--o{ PARCOURS_CAREER_OPPORTUNITIES : associated_with
 
     PARCOURS {
         int id PK
@@ -71,7 +73,6 @@ erDiagram
     TEACHING_UNITS {
         int id PK
         int semester_id FK
-        string code
         string name
         string category
         decimal ects
@@ -82,8 +83,8 @@ erDiagram
         int teaching_unit_id FK
         string name
         text description
-        text objectives
         text content
+        decimal ects
     }
 
     LEARNING_RESOURCES {
@@ -97,21 +98,27 @@ erDiagram
 
     CAREER_OPPORTUNITIES {
         int id PK
-        int parcours_id FK
         string title
         string sector
         text description
         text required_skills
+    }
+
+    PARCOURS_CAREER_OPPORTUNITIES {
+        int parcours_id PK, FK
+        int career_opportunity_id PK, FK
     }
 ```
 ### Cardinalités
 | Relation | Cardinalité | Explication |
 | --- | --- | --- |
 | PARCOURS – SEMESTERS | 1,N | Un parcours contient un ou plusieurs semestres. Un semestre appartient à un seul parcours. |
-| PARCOURS – CAREER_OPPORTUNITIES | 1,N | Un parcours peut conduire à plusieurs métiers. Un métier enregistré est associé à un seul parcours. |
+| PARCOURS – CAREER_OPPORTUNITIES | N,N | Un parcours peut être associé à plusieurs métiers. Un même métier peut être associé à plusieurs parcours. |
 | SEMESTERS – TEACHING_UNITS | 1,N | Un semestre contient une ou plusieurs UE. Une UE appartient à un seul semestre. |
-| TEACHING_UNITS – SUBJECTS | 1,N | Une UE peut aborder plusieurs notions. Une notion appartient à une seule UE. |
-| SUBJECTS – LEARNING_RESOURCES | 1,N | Une notion peut posséder plusieurs ressources. Une ressource est associée à une seule notion. |
+| TEACHING_UNITS – SUBJECTS | 1,N | Une UE regroupe plusieurs matières. Chaque matière appartient à une seule UE. |
+| SUBJECTS – LEARNING_RESOURCES | 1,N |	Une matière peut être associée à plusieurs ressources pédagogiques. Chaque ressource est rattachée à une seule matière. |
+
+La relation N,N entre `PARCOURS` et `CAREER_OPPORTUNITIES` est implémentée à l'aide de la table d'association `PARCOURS_CAREER_OPPORTUNITIES`. Cette table contient les deux clés étrangères `parcours_id` et `career_opportunity_id`, qui forment ensemble sa clé primaire composite.
 
 ## Dictionnaire de données
 Le dictionnaire de données détaille les différentes tables, leurs attributs, leurs types ainsi que les contraintes appliquées.
@@ -162,13 +169,10 @@ Un parcours peut donc posséder un semestre 1 et un semestre 2, mais ne peut pas
 ### Table TEACHING_UNITS
 Cette table représente les unités d'enseignement (UE) qui composent les semestres.
 
-*Note : Une UE correspond à un enseignement identifié, comme « Algebra 1 », « Introduction to Programming » ou « Calculus 1 ».*
-
 | Attribut | Type | Contraintes | Description |
 | --- | --- | --- | --- |
 | id | INT | PK | Identifiant unique de l'UE. |
 | semester_id | INT | FK, NOT NULL | Référence au semestre associé. |
-| code | VARCHAR | NULL | Code officiel de l'unité d'enseignement. |
 | name | VARCHAR | NOT NULL | Nom de l'enseignement. |
 | category | VARCHAR(20) | NOT NULL, CHECK | Catégorie de l'UE. |
 | ects | DECIMAL(4,1) | NOT NULL, CHECK | Nombre de crédits ECTS attribués à l'UE. |
@@ -183,20 +187,14 @@ pour l'attribut `category` les valeurs autorisées sont :
 | `TRANSVERSAL` | UE transversale. |
 
 Contraintes :
-
-- `UNIQUE (semester_id, code)` : empêche deux UE d'avoir le même code dans un même semestre, lorsque le code est renseigné.
 - `CHECK (category IN ('MAJOR_1', 'MAJOR_2', 'MINOR', 'TRANSVERSAL'))` : limite les catégories aux valeurs autorisées.
 - `CHECK (ects > 0)` : empêche l'attribution d'un nombre de crédits nul ou négatif.
 
-Le champ `code` reste facultatif, car toutes les maquettes pédagogiques ne fournissent pas nécessairement un code pour chaque UE.
-
 ### Table SUBJECTS
 
-Cette table représente les notions et les thèmes abordés au sein des unités d'enseignement.
+Cette table représente les matières enseignées au sein des unités d'enseignement (UE).
 
-Contrairement aux UE, les sujets ne représentent pas des enseignements complets, mais les différents concepts étudiés dans ces enseignements.
-
-*Par exemple, une UE appelée « Algebra 1 » peut aborder la théorie des ensembles, le raisonnement logique et les démonstrations mathématiques.*
+*Par exemple, « Algèbre 1 » et « Analyse 1 » sont des matières et sont donc enregistrées comme des SUBJECTS.*
 
 | Attribut | Type | Contraintes | Description |
 | --- | --- | --- | --- |
@@ -234,13 +232,10 @@ Pour l'attribut `resource_type` les valeurs autorisées sont :
 | `DOCUMENT` | Document | PDF, supports de cours et fiches de révision. |
 | `VIDEO` | Vidéo | Cours vidéo, tutoriels et conférences. |
 | `WEBSITE` | Site web | Articles, documentations et sites pédagogiques. |
-| `EXERCISE` | Exercice | Exercices pratiques, QCM et sujets d'examen. |
-| `TOOL` | Outil | Logiciels, simulateurs et plateformes interactives. |
-| `OTHER` | Autre | Ressources ne correspondant pas aux catégories précédentes. |
 
 Contraintes :
 - `UNIQUE (subject_id, url)` : empêche d'enregistrer deux fois le même lien pour une même notion.
-- `CHECK (resource_type IN ('DOCUMENT', 'VIDEO', 'WEBSITE', 'EXERCISE', 'TOOL', 'OTHER'))` : limite les types de ressources aux catégories autorisées.
+- `CHECK (resource_type IN ('DOCUMENT', 'VIDEO', 'WEBSITE'))` : limite les types de ressources aux catégories autorisées.
 
 Le choix d'une liste fixe de catégories permet de standardiser les ressources et d'éviter les différences d'écriture.
 
@@ -250,32 +245,44 @@ Cette table regroupe les métiers et les débouchés professionnels associés au
 | Attribut | Type | Contraintes | Description |
 | --- | --- | --- | --- |
 | id | INT | PK | Identifiant unique du débouché. |
-| parcours_id | INT | FK, NOT NULL | Référence au parcours associé. |
 | title | VARCHAR | NOT NULL | Intitulé du métier. |
 | sector | VARCHAR | NULL | Secteur professionnel concerné. |
 | description | TEXT | NULL | Description du métier. |
 | required_skills | TEXT | NULL | Compétences généralement attendues. |
 
-Contrainte supplémentaire :
+### Table PARCOURS_CAREER_OPPORTUNITIES
 
-- `UNIQUE (parcours_id, title)` : empêche d'associer deux fois le même métier au même parcours.
+Cette table d'association matérialise la relation Many-to-Many entre `PARCOURS` et `CAREER_OPPORTUNITIES`.
 
-Un métier peut néanmoins être associé à plusieurs parcours différents. Dans ce cas, il sera enregistré une fois pour chaque parcours concerné.
+|Attribut|Type|Contraintes|Description|
+|---|---|---|---|
+|`parcours_id`|INT|PK, FK, NOT NULL|Référence au parcours associé.|
+|`career_opportunity_id`|INT|PK, FK, NOT NULL|Référence au débouché professionnel associé.|
+
+La clé primaire est composée des deux attributs :
+
+```
+PRIMARY KEY (parcours_id, career_opportunity_id)
+```
+
+Cette clé composite empêche d'enregistrer plusieurs fois la même association entre un parcours et un débouché professionnel. Les deux attributs sont également des clés étrangères vers `PARCOURS(id)` et `CAREER_OPPORTUNITIES(id)`.
 
 ### Règles d'intégrité référentielle
-Les clés étrangères permettent de garantir que les enregistrements enfants font référence à des enregistrements parents existants.
 
-Pour le MVP, nous proposons également d'utiliser la suppression en cascade (`ON DELETE CASCADE`) sur les relations hiérarchiques.
+Les clés étrangères garantissent que les enregistrements enfants font référence à des enregistrements parents existants.
 
-| Relation | Comportement | Conséquence |
-| --- | --- | --- |
-| PARCOURS → SEMESTERS | CASCADE | La suppression d'un parcours supprime ses semestres. |
-| SEMESTERS → TEACHING_UNITS | CASCADE | La suppression d'un semestre supprime ses UE. |
-| TEACHING_UNITS → SUBJECTS | CASCADE | La suppression d'une UE supprime ses sujets. |
-| SUBJECTS → LEARNING_RESOURCES | CASCADE | La suppression d'un sujet supprime ses ressources. |
-| PARCOURS → CAREER_OPPORTUNITIES | CASCADE | La suppression d'un parcours supprime ses débouchés associés. |
+Le comportement de suppression doit être défini au niveau de la base de données. Si la suppression en cascade (`ON DELETE CASCADE`) est retenue, les conséquences sont les suivantes :
 
-Ces règles permettent de maintenir la cohérence de la base de données et d'éviter la présence d'enregistrements orphelins.
+|Relation|Comportement proposé|Conséquence|
+|---|---|---|
+|PARCOURS → SEMESTERS|CASCADE|La suppression d'un parcours supprime ses semestres.|
+|SEMESTERS → TEACHING_UNITS|CASCADE|La suppression d'un semestre supprime ses UE.|
+|TEACHING_UNITS → SUBJECTS|CASCADE|La suppression d'une UE supprime ses sujets.|
+|SUBJECTS → LEARNING_RESOURCES|CASCADE|La suppression d'un sujet supprime ses ressources.|
+|PARCOURS → PARCOURS_CAREER_OPPORTUNITIES|CASCADE|La suppression d'un parcours supprime ses associations avec les débouchés.|
+|CAREER_OPPORTUNITIES → PARCOURS_CAREER_OPPORTUNITIES|CASCADE|La suppression d'un débouché supprime ses associations avec les parcours.|
+
+Ces règles permettent de maintenir la cohérence de la base de données et d'éviter la présence d'associations orphelines. Elles doivent être comparées à la configuration réelle des clés étrangères dans le projet.
 
 ## Sources des données
 TODO: Référencer les maquettes et sources officielles utilisées.

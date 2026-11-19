@@ -123,8 +123,9 @@ class CareerOpportunityServiceTest {
         List<ParcoursDTO> result = careerService.getParcoursList(1L);
 
         assertThat(result).hasSize(2);
-        assertThat(result).extracting(ParcoursDTO::name).containsExactly("EI2D","P2S");
-        assertThat(result).extracting(ParcoursDTO::level).containsExactly("Master 2", "Master 2");
+        // Les parcours viennent d'un Set (HashSet) : l'ordre n'est pas garanti.
+        assertThat(result).extracting(ParcoursDTO::name).containsExactlyInAnyOrder("EI2D","P2S");
+        assertThat(result).extracting(ParcoursDTO::level).containsOnly("Master 2");
 
         verify(careerRepository).findById(1L);
     }

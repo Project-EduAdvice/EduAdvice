@@ -26,6 +26,13 @@ server:
   # Les plateformes (Render, etc.) imposent le port via la variable PORT.
   port: ${PORT:8080}
 
+app:
+  cors:
+    # Origines autorisées à appeler l'API depuis un navigateur,
+    # séparées par des virgules. En prod : l'URL Vercel du frontend.
+    # Valeur par défaut = dev local uniquement (fermé par défaut).
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173}
+
 management:
   endpoints:
     web:

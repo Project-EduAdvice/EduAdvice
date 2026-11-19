@@ -1,12 +1,30 @@
 import { Loader2 } from "lucide-react";
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
+
+// Au-delà de ce délai, le chargement n'est plus « normal » : le backend est
+// probablement en train de se réveiller (hébergement gratuit mis en veille).
+const SLOW_LOADING_DELAY_MS = 5000;
 
 export function LoadingState({ label = "Chargement…" }: { label?: string }) {
+  const [isSlow, setIsSlow] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsSlow(true), SLOW_LOADING_DELAY_MS);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <p role="status" className="flex items-center gap-2 py-6 text-muted-foreground">
-      <Loader2 className="size-4 animate-spin" aria-hidden="true" />
-      {label}
-    </p>
+    <div role="status" className="py-6 text-muted-foreground">
+      <p className="flex items-center gap-2">
+        <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+        {label}
+      </p>
+      {isSlow && (
+        <p className="mt-2 text-sm">
+          Le serveur démarre, cela peut prendre jusqu'à une minute…
+        </p>
+      )}
+    </div>
   );
 }
 

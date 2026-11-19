@@ -4,7 +4,9 @@ import type { ApiError } from "./types";
 export const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL ?? "/api",
   headers: { Accept: "application/json" },
-  timeout: 10000,
+  // En prod, le backend (Render Free) s'endort après 15 min d'inactivité et met
+  // environ 1 min à redémarrer. 90 s laisse le temps au réveil sans attendre indéfiniment.
+  timeout: 90_000,
 });
 
 function isServerUnreachable(error: unknown): boolean {

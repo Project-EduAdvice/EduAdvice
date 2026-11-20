@@ -1,8 +1,9 @@
 # Architecture de déploiement — EduAdvice
 
-> **Statut :** proposé — à valider par l'équipe
+> **Statut :** validé par l'équipe — en production (frontend, backend, base)
 > **Responsable DevOps :** Oumar
-> **Dernière mise à jour :** novembre 2026
+> **Dernière mise à jour :** 19 novembre 2026
+> **Procédures pas à pas :** [Guide de déploiement](../deployment/deployment-guide.md)
 
 Ce document décrit **où** et **comment** EduAdvice est exécuté, de la machine du
 développeur jusqu'à la production, ainsi que les décisions qui justifient ces choix.
@@ -62,7 +63,7 @@ flowchart LR
 - Le frontend **ne parle jamais** à la base de données.
 - Backend et base sont dans **la même région** (Francfort) pour limiter la latence.
 
-### URLs publiques (à confirmer lors de la création des services)
+### URLs publiques (en service)
 
 | Composant | URL |
 |---|---|
@@ -141,7 +142,7 @@ flowchart TD
 | `DB_PASSWORD` | Backend | Render (env) | **Oui** |
 | `SPRING_PROFILES_ACTIVE=prod` | Backend | Render (env) | Non |
 | `CORS_ALLOWED_ORIGINS` | Backend | Render (env) | Non |
-| `VITE_API_BASE_URL` | Frontend (au **build**) | GitHub Actions (variable) | **Non — public** |
+| `VITE_API_BASE_URL` | Frontend (au **build**) | Projet Vercel (env de production) | **Non — public** |
 | `RENDER_DEPLOY_HOOK_URL` | GitHub Actions | GitHub Secrets | **Oui** |
 | `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID` | GitHub Actions | GitHub Secrets | **Oui** (token) |
 | `BACKUP_DATABASE_URL`, `BACKUP_PASSPHRASE` | Workflow de sauvegarde | GitHub Secrets | **Oui** |
@@ -172,7 +173,7 @@ flowchart TD
 - **Schéma** : géré exclusivement par les migrations Flyway (`backend/src/main/resources/db/migration`).
 - **Connexion** : connexion **directe** Neon (pas le *pooler*), suffisante pour une instance unique.
 - **Sauvegardes — deux niveaux :**
-  1. **Neon** : restauration à un instant T (*point-in-time restore*) intégrée, sur une fenêtre courte en offre gratuite.
+  1. **Neon** : restauration à un instant T (*point-in-time restore*) intégrée, limitée aux **6 dernières heures** en offre gratuite.
   2. **EduAdvice** : workflow GitHub Actions planifié (quotidien) qui exécute `pg_dump`, **chiffre** le fichier,
      et le conserve comme artefact (rétention 30 jours). Le chiffrement est indispensable car le dépôt est public.
 - **Test de restauration** : une sauvegarde non testée n'est pas une sauvegarde → restauration testée en local
@@ -184,8 +185,8 @@ flowchart TD
 
 | Limite (offres gratuites) | Impact | Atténuation |
 |---|---|---|
-| Render Free : mise en veille après **15 min** sans trafic | Première requête après une période d'inactivité : **~30 à 60 s** | Message de chargement côté frontend ; documenté pour la démo ; ping avant une démonstration |
-| Render Free : **512 Mo RAM, 0,1 CPU** | Démarrage lent de Spring Boot, risque de manque de mémoire | Réglage de la mémoire JVM (`-XX:MaxRAMPercentage`), image légère |
+| Render Free : mise en veille après **15 min** sans trafic | Première requête après une période d'inactivité : **~1 min** (démarrage mesuré : 55,7 s) | Timeout frontend de 90 s + message « le serveur démarre » ; ouvrir le site avant une démonstration |
+| Render Free : **512 Mo RAM, 0,1 CPU** | Démarrage lent de Spring Boot, risque de manque de mémoire | Réglages JVM (`MaxRAMPercentage`, `SerialGC`) et CDS : démarrage ramené de ~130 s à ~56 s |
 | Render Free : 750 h d'instance / mois | Suffisant pour **un seul** service | Ne pas créer d'autre service gratuit dans le même espace |
 | Neon Free : base suspendue après **5 min** d'inactivité | Quelques centaines de ms au réveil | Négligeable pour cet usage |
 | Neon Free : stockage limité par projet | Largement suffisant pour un catalogue de formations | Surveillance dans le tableau de bord Neon |

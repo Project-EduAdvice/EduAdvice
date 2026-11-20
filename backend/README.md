@@ -65,7 +65,7 @@ backend/
 │   │   │       │    └── TeachingUnitService.java
 │   │   │       │    └── SubjectsService.java
 │   │   │       │    └── LearningRessourcesService.java
-│   │   │       │    └── CareerOpportunitiesService.java
+│   │   │       │    └── CareerOpportunityService.java
 │   │   │       ├── repository/
 │   │   │       │    └── ParcoursRepository.java
 │   │   │       │    └── SemestersRepository.java

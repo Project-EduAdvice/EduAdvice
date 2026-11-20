@@ -76,6 +76,20 @@ Le fichier `.env` n'est jamais versionné. Seul `.env.example` l'est.
 | `npm run lint`    | Analyse le code avec Oxlint                       |
 | `npm run preview` | Prévisualise le build de production               |
 
+## Tests
+
+Les tests utilisent Vitest, jsdom et Testing Library.
+
+```bash
+npm test            # lance tous les tests une fois
+npm run test:watch  # mode watch (si le script existe)
+```
+
+- Les fichiers de test sont placés à côté du code testé (`*.test.ts` / `*.test.tsx`).
+- `src/test/` contient la configuration (`setup.ts`), les données de test (`fixtures.ts`) et l'utilitaire de rendu avec routeur (`utils.tsx`).
+- Les appels au backend sont mockés : aucun serveur n'est nécessaire pour lancer les tests.
+- Couverture actuelle : 17 fichiers, 87 tests (pages, composants, services, hooks, utilitaires).
+
 ## Structure du projet
 
 ```text

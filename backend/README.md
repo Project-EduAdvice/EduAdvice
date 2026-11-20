@@ -1,4 +1,4 @@
-# EduAdvice — Backend
+# EduAdvice - Backend
 
 Le backend d'EduAdvice est une API REST développée avec Java et Spring Boot. Il repose sur une architecture monolithique et communique avec une base de données PostgreSQL.
 
@@ -515,4 +515,4 @@ Enfin, créer une Pull Request vers la branche `main` afin que les modifications
 
 ---
 
-**EduAdvice — Backend Team**
+**EduAdvice - Backend Team**

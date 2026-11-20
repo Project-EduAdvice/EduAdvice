@@ -1,4 +1,4 @@
-# EduAdvice – Frontend
+# EduAdvice - Frontend
 
 Interface web de la plateforme **EduAdvice** : elle présente les parcours universitaires du Master Informatique (Université Sorbonne Paris Nord, parcours P2S et EI2D), leurs semestres, unités d'enseignement, cours, ressources pédagogiques et débouchés professionnels.
 
@@ -43,6 +43,13 @@ docker compose up -d
 Les données de départ (parcours, semestres, unités d'enseignement, cours, ressources, métiers) sont créées automatiquement au premier lancement.
 
 2. **Frontend** (depuis le dossier `frontend/`) :
+
+Installer les dépendances nécessaire avec :
+
+```bash
+npm install
+```
+Puis lancer l'interface avec :
 
 ```bash
 npm run dev

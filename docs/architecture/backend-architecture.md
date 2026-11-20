@@ -1,4 +1,4 @@
-# Architecture du backend — EduAdvice
+# Architecture du backend - EduAdvice
 
 ## 1. Présentation
 
@@ -33,7 +33,7 @@ backend/
 ├── src/
 │   ├── main/
 │   │   ├── java/
-│   │   │   └── com/eduadvice/
+│   │   │   └── com/eduadvice/backend/
 │   │   │       ├── EduAdviceApplication.java
 │   │   │       ├── controller/
 │   │   │       ├── service/
@@ -46,7 +46,9 @@ backend/
 │   │       └── application.yml
 │   └── test/
 │       └── java/
-│           └── com/eduadvice/
+│           └── com/eduadvice/backend/
+│               ├── controller/
+│               └── service/
 ├── pom.xml
 └── README.md
 ```

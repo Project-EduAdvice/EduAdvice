@@ -1,6 +1,6 @@
-# Architecture de déploiement — EduAdvice
+# Architecture de déploiement - EduAdvice
 
-> **Statut :** validé par l'équipe — en production (frontend, backend, base)
+> **Statut :** validé par l'équipe en production (frontend, backend, base)
 > **Responsable DevOps :** Oumar
 > **Dernière mise à jour :** 19 novembre 2026
 > **Procédures pas à pas :** [Guide de déploiement](../deployment/deployment-guide.md)
@@ -19,7 +19,7 @@ développeur jusqu'à la production, ainsi que les décisions qui justifient ces
 | Équipe de 4 personnes, 1 profil DevOps débutant | Services managés (PaaS) plutôt qu'un serveur à administrer |
 | Utilisateurs en France | Hébergement en **Europe (Francfort)** |
 | Application surtout en **lecture** (consultation de formations) | Pas de forte charge en écriture ; une seule instance backend suffit |
-| Stack imposée : React + Vite, Java 21 + Spring Boot, PostgreSQL, GitHub Actions | — |
+| Stack imposée : React + Vite, Java 21 + Spring Boot, PostgreSQL, GitHub Actions | Le poids de Spring Boot et de son écosystème Java, associé à l'initialisation des données au démarrage, entraîne un temps de démarrage du backend relativement long. |
 
 ---
 
@@ -79,7 +79,7 @@ HTTPS est fourni **automatiquement** par Vercel et Render (certificats TLS gér�
 
 | Composant | Hébergeur retenu | Pourquoi | Alternatives écartées |
 |---|---|---|---|
-| Frontend | **Vercel** (Hobby) | Spécialisé dans les sites statiques/Vite, CDN mondial, HTTPS auto, déploiement via CLI | Netlify, Cloudflare Pages (équivalents — choix de familiarité) |
+| Frontend | **Vercel** (Hobby) | Spécialisé dans les sites statiques/Vite, CDN mondial, HTTPS auto, déploiement via CLI | Netlify, Cloudflare Pages (équivalents - choix de familiarité) |
 | Backend | **Render** (Free, Docker) | Exécute n'importe quel conteneur Docker, HTTPS auto, variables d'environnement chiffrées, *deploy hooks* | Railway (plus d'offre gratuite durable), Fly.io (carte bancaire requise), VPS (trop d'administration pour démarrer) |
 | Base de données | **Neon** (Free) | PostgreSQL managé, gratuit sans expiration, branches, restauration à un instant T | Render Postgres (base gratuite supprimée après expiration), Supabase (plus large que nécessaire) |
 | CI/CD | **GitHub Actions** | Imposé ; intégré au dépôt | — |
@@ -142,7 +142,7 @@ flowchart TD
 | `DB_PASSWORD` | Backend | Render (env) | **Oui** |
 | `SPRING_PROFILES_ACTIVE=prod` | Backend | Render (env) | Non |
 | `CORS_ALLOWED_ORIGINS` | Backend | Render (env) | Non |
-| `VITE_API_BASE_URL` | Frontend (au **build**) | Projet Vercel (env de production) | **Non — public** |
+| `VITE_API_BASE_URL` | Frontend (au **build**) | Projet Vercel (env de production) | **Non - public** |
 | `RENDER_DEPLOY_HOOK_URL` | GitHub Actions | GitHub Secrets | **Oui** |
 | `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID` | GitHub Actions | GitHub Secrets | **Oui** (token) |
 | `BACKUP_DATABASE_URL`, `BACKUP_PASSPHRASE` | Workflow de sauvegarde | GitHub Secrets | **Oui** |
@@ -162,7 +162,7 @@ flowchart TD
 | Chiffrement vers la base | `sslmode=require` dans l'URL JDBC Neon |
 | CORS | Le backend n'autorise **que** l'origine du frontend de prod (pas de `*`) |
 | Profil de production | `SPRING_PROFILES_ACTIVE=prod` : pas de `show-sql`, pas de devtools, erreurs sans stack trace |
-| Schéma protégé | `ddl-auto: validate` — Hibernate ne modifie jamais le schéma ; seul Flyway le fait |
+| Schéma protégé | `ddl-auto: validate` - Hibernate ne modifie jamais le schéma ; seul Flyway le fait |
 | Moindre privilège | Jetons de déploiement limités à un projet ; accès en lecture seule pour la sauvegarde (évolution) |
 | Image Docker | Image d'exécution minimale (JRE seul), utilisateur non-root |
 
@@ -172,7 +172,7 @@ flowchart TD
 
 - **Schéma** : géré exclusivement par les migrations Flyway (`backend/src/main/resources/db/migration`).
 - **Connexion** : connexion **directe** Neon (pas le *pooler*), suffisante pour une instance unique.
-- **Sauvegardes — deux niveaux :**
+- **Sauvegardes - deux niveaux :**
   1. **Neon** : restauration à un instant T (*point-in-time restore*) intégrée, limitée aux **6 dernières heures** en offre gratuite.
   2. **EduAdvice** : workflow GitHub Actions planifié (quotidien) qui exécute `pg_dump`, **chiffre** le fichier,
      et le conserve comme artefact (rétention 30 jours). Le chiffrement est indispensable car le dépôt est public.

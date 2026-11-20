@@ -1,4 +1,4 @@
-# Product Backlog — EduAdvice
+# Product Backlog - EduAdvice
 
 ## 1. Introduction
 
@@ -16,23 +16,23 @@ L'ensemble des fonctionnalités du MVP est accessible à cet acteur, sans distin
 
 | ID | User Story | Priorité | État |
 |---|---|---|---|
-| US-01 | En tant qu'utilisateur, je souhaite consulter la présentation d'une formation afin d'en comprendre les objectifs et l'organisation. | MVP | À faire |
-| US-02 | En tant qu'utilisateur, je souhaite consulter le programme organisé par semestre afin de découvrir les matières enseignées. | MVP | À faire |
-| US-03 | En tant qu'utilisateur, je souhaite consulter la fiche d'une matière afin d'en connaître les objectifs et le contenu. | MVP | À faire |
-| US-04 | En tant qu'utilisateur, je souhaite accéder aux ressources pédagogiques associées à une matière afin de compléter mon apprentissage. | MVP | À faire |
-| US-05 | En tant qu'utilisateur, je souhaite consulter les débouchés professionnels afin de découvrir les possibilités après la formation. | MVP | À faire |
-| US-06 | En tant qu'utilisateur, je souhaite naviguer facilement entre les différentes rubriques afin de trouver les informations recherchées. | MVP | À faire |
+| US-01 | En tant qu'utilisateur, je souhaite consulter la présentation d'une formation afin d'en comprendre les objectifs et l'organisation. | MVP | fait |
+| US-02 | En tant qu'utilisateur, je souhaite consulter le programme organisé par semestre afin de découvrir les matières enseignées. | MVP | fait |
+| US-03 | En tant qu'utilisateur, je souhaite consulter la fiche d'une matière afin d'en connaître les objectifs et le contenu. | MVP | fait |
+| US-04 | En tant qu'utilisateur, je souhaite accéder aux ressources pédagogiques associées à une matière afin de compléter mon apprentissage. | MVP | fait |
+| US-05 | En tant qu'utilisateur, je souhaite consulter les débouchés professionnels afin de découvrir les possibilités après la formation. | MVP | fait |
+| US-06 | En tant qu'utilisateur, je souhaite naviguer facilement entre les différentes rubriques afin de trouver les informations recherchées. | MVP | fait |
 
 ## 4. Correspondance avec les exigences
 
 | User Story | Besoin fonctionnel |
 |---|---|
-| US-01 | BF-01 — Présentation de la formation |
-| US-02 | BF-02 — Programme par semestre |
-| US-03 | BF-03 — Fiches des matières |
-| US-04 | BF-04 — Ressources pédagogiques |
-| US-05 | BF-05 — Débouchés professionnels |
-| US-06 | BF-06 — Navigation |
+| US-01 | BF-01 : Présentation de la formation |
+| US-02 | BF-02 : Programme par semestre |
+| US-03 | BF-03 : Fiches des matières |
+| US-04 | BF-04 : Ressources pédagogiques |
+| US-05 | BF-05 : Débouchés professionnels |
+| US-06 | BF-06 : Navigation |
 
 ## 5. Fonctionnalités hors MVP
 

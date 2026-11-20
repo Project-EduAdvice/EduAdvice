@@ -1,4 +1,4 @@
-# Contrat d'API REST — EduAdvice
+# Contrat d'API REST - EduAdvice
 
 ## 1. Présentation
 
@@ -74,23 +74,23 @@ Exemple de réponse pour la consultation d'une matière :
 Exemple de réponse pour la consultation des matières d'une unité d'enseignement :
 
 ```json
-  {
-	  "id":1,
-	  "teachingUnitId":1,
-	  "name":"Apprentissage statistique",
-	  "description":"Étude des méthodes statistiques permettant aux systèmes informatiques d'apprendre à partir de données.",
-	  "content":"Apprentissage supervisé, régression, classification, estimation, généralisation et évaluation des modèles.",
-	  "ects":3.0
-	},
+{
+	"id":1,
+	"teachingUnitId":1,
+	"name":"Apprentissage statistique",
+	"description":"Étude des méthodes statistiques permettant aux systèmes informatiques d'apprendre à partir de données.",
+	"content":"Apprentissage supervisé, régression, classification, estimation, généralisation et évaluation des modèles.",
+	"ects":3.0
+},
 
-	{
-		"id":2,
-		"teachingUnitId":1,
-		"name":"Deep Learning",
-		"description":"Étude des réseaux de neurones profonds utilisés pour apprendre des représentations complexes à partir de données.",
-		"content":"Réseaux de neurones, rétropropagation, fonctions d'activation, optimisation, réseaux convolutifs et architectures profondes.",
-		"ects":3.0
-	}
+{
+	"id":2,
+	"teachingUnitId":1,
+	"name":"Deep Learning",
+	"description":"Étude des réseaux de neurones profonds utilisés pour apprendre des représentations complexes à partir de données.",
+	"content":"Réseaux de neurones, rétropropagation, fonctions d'activation, optimisation, réseaux convolutifs et architectures profondes.",
+	"ects":3.0
+}
 ```
 Les propriétés exactes des réponses dépendent des DTO définis dans le backend et des informations disponibles dans la base de données.
 

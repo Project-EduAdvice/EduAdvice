@@ -24,7 +24,7 @@ Avant de lancer le backend, assurez-vous de disposer des éléments suivants :
 - Java JDK 21 installé.
 - PostgreSQL installé.
 - Git installé.
-- Un terminal ou un environnement de développement (IntelliJ IDEA, Eclipse ou VSCodium).
+- Un terminal ou un environnement de développement IntelliJ IDEA.
 
 **Maven :** Il n'est pas nécessaire d'installer Maven globalement. Le projet utilise le Maven Wrapper (`mvnw`), qui télécharge et utilise automatiquement la version de Maven configurée pour le projet.
 
@@ -41,6 +41,9 @@ Pour vérifier PostgreSQL :
 psql --version
 ```
 
+PS : Vous pouvez aussi utilisé docker pour la bases de données un `compose.yaml` est présent à la racine du projet.
+
+Si vous utilisé docker, pas besoin de verifier la version de PostgreSQL sur votre machine local.
 ## 3. Structure du projet
 
 ```text
@@ -106,6 +109,7 @@ backend/
 ├── .gitignore
 ├── mvnw
 ├── mvnw.cmd
+├── compose.yaml
 └── pom.xml
 ```
 
@@ -175,15 +179,21 @@ Ne partagez jamais vos mots de passe et ne les ajoutez jamais au dépôt Git.
 
 **Important :** chaque développeur doit disposer d'une base PostgreSQL locale nommée `eduadvice` et d'un utilisateur disposant des droits nécessaires. La procédure de création est détaillée dans la section suivante.
 
-La propriété Hibernate `ddl-auto: none` désactive la génération et la modification automatiques du schéma. Hibernate ne créera donc pas les tables au démarrage de l'application. Le schéma de la base de données sera géré séparément par l'équipe.
-
 ## 6. Installation et configuration de PostgreSQL
 
 Chaque membre de l'équipe doit disposer de sa propre installation locale de PostgreSQL. La base de données n'est pas partagée automatiquement entre les développeurs.
 
 Cette section explique comment installer ou démarrer PostgreSQL, créer l'utilisateur et la base de données nécessaires au backend EduAdvice.
 
-### 6.1. Installer et démarrer PostgreSQL
+Deux méthodes sont possibles pour disposer d'une base PostgreSQL fonctionnelle.
+
+- **Méthode A** : installer et configurer PostgreSQL directement sur sa machine.
+
+- **Méthode B** : démarrer PostgreSQL dans un conteneur Docker avec Docker Compose.
+
+Il suffit de choisir une seule méthode.
+
+### 6.1. Méthode A - Installer et démarrer PostgreSQL
 
 Si PostgreSQL n'est pas encore installé, consultez la page officielle de téléchargement et choisissez les instructions correspondant à votre système d'exploitation :
 
@@ -217,7 +227,105 @@ Si PostgreSQL a été installé avec Homebrew, démarrez le service avec la comm
 brew services start postgresql
 ```
 
-### 6.2. Se connecter au compte administrateur PostgreSQL
+### 6.2. Méthode B - Utiliser Docker Compose
+
+Le projet EduAdvice dispose d'un fichier `docker-compose.yml` situé à la racine du dépôt Git.
+
+Ce fichier permet de démarrer un conteneur PostgreSQL avec la configuration nécessaire au fonctionnement du backend.
+
+**Avantages de cette méthode :**
+
+- Pas besoin d'installer PostgreSQL directement sur sa machine.
+    
+- Configuration commune pour tous les développeurs.
+    
+- Démarrage et arrêt simples de la base de données.
+    
+- Environnement de développement plus facile à reproduire.
+
+PS : Vérifier que docker est bien actif sur votre machine
+
+**Étape 1 : Se placer à la racine du projet**
+
+Depuis un terminal :
+
+```bash
+cd EduAdvice
+```
+
+Vérifiez que le fichier Docker Compose est présent :
+
+```bash
+ls
+```
+
+Vous devez notamment retrouver :
+
+```text
+docker-compose.yml
+backend/
+```
+
+**Étape 2 : Démarrer PostgreSQL**
+
+Exécutez :
+
+```bash
+docker compose up -d
+```
+
+Cette commande démarre les services définis dans le fichier `docker-compose.yml` en arrière-plan.
+
+Lors du premier lancement, Docker télécharge automatiquement l'image PostgreSQL si elle n'est pas déjà présente sur la machine.
+
+**Étape 3 : Vérifier que le conteneur fonctionne**
+
+Exécutez :
+
+```bash
+docker compose ps
+```
+
+Le conteneur PostgreSQL doit apparaître avec un état `Up` ou `running`.
+
+Pour consulter les logs :
+
+```bash
+docker compose logs -f
+```
+
+Pour quitter l'affichage des logs sans arrêter le conteneur :
+
+```text
+Ctrl + C
+```
+
+**Étape 4 : Arrêter PostgreSQL**
+
+Pour arrêter les conteneurs sans supprimer les données :
+
+```bash
+docker compose down
+```
+
+Les données sont conservées si le fichier Docker Compose utilise un volume persistant.
+
+Pour redémarrer PostgreSQL ultérieurement :
+
+```bash
+docker compose up -d
+```
+
+**Important :** ne supprimez pas les volumes Docker si vous souhaitez conserver les données de votre base PostgreSQL.
+
+La commande suivante supprime également les volumes associés au projet et peut entraîner la perte des données :
+
+```bash
+docker compose down -v
+```
+
+Elle ne doit donc être utilisée que si vous souhaitez volontairement réinitialiser la base de données.
+### 6.3. Se connecter au compte administrateur PostgreSQL
 
 Pour créer un utilisateur et une base de données, il faut d'abord se connecter avec un compte PostgreSQL disposant des privilèges nécessaires.
 
@@ -243,13 +351,19 @@ Selon votre installation, connectez-vous avec le compte administrateur PostgreSQ
 psql -U postgres -d postgres
 ```
 
-Si la connexion réussit, vous arrivez dans le terminal PostgreSQL. L'invite ressemble généralement à :
+**Docker :**
 
+```bash
+docker exec -it <nom_du_conteneur> psql -U eduadvice_app -d eduadvice
+```
+Vous trouverez le nom en faisant un `docker ps`
+
+Si la connexion réussit, vous arrivez dans le terminal PostgreSQL. L'invite ressemble généralement à :
 ```text
 postgres=#
 ```
 
-### 6.3. Créer l'utilisateur de l'application
+### 6.4. Créer l'utilisateur de l'application
 
 Dans le terminal PostgreSQL, exécutez :
 
@@ -267,7 +381,7 @@ Cet utilisateur sera utilisé par l'application Spring Boot pour se connecter à
 
 Si le rôle `eduadvice_app` existe déjà dans votre installation, ne relancez pas cette commande : utilisez le rôle existant et vérifiez son mot de passe.
 
-### 6.4. Créer la base de données
+### 6.5. Créer la base de données
 
 Toujours dans le terminal PostgreSQL, exécutez :
 
@@ -288,7 +402,7 @@ Pour quitter le terminal PostgreSQL :
 \q
 ```
 
-### 6.5. Vérifier la connexion à la base de données
+### 6.6. Vérifier la connexion à la base de données
 
 Depuis votre terminal habituel, exécutez :
 
@@ -322,7 +436,7 @@ Quittez avec :
 
 Si la connexion échoue avec une erreur d'authentification, vérifiez que la configuration locale de PostgreSQL autorise l'authentification par mot de passe pour les connexions locales TCP. La méthode dépend du système et de la configuration de PostgreSQL.
 
-### 6.6. Configurer les variables d'environnement
+### 6.7. Configurer les variables d'environnement
 
 Spring Boot utilise les variables d'environnement suivantes pour établir la connexion à PostgreSQL :
 
@@ -350,7 +464,7 @@ $env:DB_PASSWORD="VOTRE_MOT_DE_PASSE"
 
 Ces commandes doivent être exécutées dans le terminal qui sera utilisé pour démarrer le backend.
 
-### 6.7. Vérifier la configuration Spring Boot
+### 6.8. Vérifier la configuration Spring Boot
 
 Le fichier `src/main/resources/application.yml` utilise ces variables pour configurer la connexion :
 
@@ -376,18 +490,9 @@ server:
 
 **Important :** `ddl-auto: none` empêche Hibernate de créer, modifier ou supprimer automatiquement les tables. La structure de la base de données sera gérée séparément par l'équipe.
 
-## 7. Installation et démarrage du backend
+## 7.  Démarrage du backend
 
-### Étape 1 — Cloner le dépôt
-
-Depuis le dossier dans lequel vous souhaitez installer le projet :
-
-```bash
-git clone https://github.com/meloustabalan12/EduAdvice.git
-cd EduAdvice/backend
-```
-
-### Étape 2 — Vérifier les prérequis
+### Étape 1 : Vérifier les prérequis
 
 Assurez-vous que Java 21 et PostgreSQL sont installés et que le serveur PostgreSQL est démarré.
 
@@ -396,11 +501,13 @@ java -version
 psql --version
 ```
 
-### Étape 3 — Configurer les variables d'environnement
+PS: ne verifier `psql` que si vous le faite tourné en local pas besoin si vous utilisé docker.
 
-Définissez les variables décrites dans la section 6.6, en utilisant les informations de votre installation PostgreSQL.
+### Étape 2 : Configurer les variables d'environnement
 
-### Étape 4 — Compiler et exécuter les tests
+Définissez les variables décrites dans la section 6.7, en utilisant les informations de votre installation PostgreSQL.
+
+### Étape 3 : Compiler et exécuter les tests
 
 Sous Linux et macOS :
 
@@ -419,7 +526,7 @@ Cette commande nettoie les anciens fichiers de compilation, compile le projet, e
 
 PostgreSQL doit être accessible et les variables d'environnement doivent être définies pour les tests qui chargent le contexte complet de Spring.
 
-### Étape 5 — Démarrer le backend
+### Étape 4: Démarrer le backend
 
 Sous Linux et macOS :
 
@@ -437,7 +544,7 @@ L'API sera accessible à l'adresse suivante :
 
 `http://localhost:8080`
 
-## 8. Vérification de l'API — Health Check
+## 8. Vérification de l'API : Health Check
 
 Un endpoint permet de vérifier que le backend répond correctement.
 

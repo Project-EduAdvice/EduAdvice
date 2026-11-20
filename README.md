@@ -3,7 +3,14 @@
 ![Node.js](https://img.shields.io/badge/Node.js-24_LTS-339933?logo=node.js&logoColor=white)
 ![npm](https://img.shields.io/badge/npm-10.8.2-CB3837?logo=npm&logoColor=white)
 ![Oxlint](https://img.shields.io/badge/Oxlint-1.91.0-orange)
-
+![Java](https://img.shields.io/badge/Java-21-ED8B00?logo=openjdk&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-6DB33F?logo=springboot&logoColor=white)
+![Maven](https://img.shields.io/badge/Maven-Build%20Tool-C71A36?logo=apachemaven&logoColor=white)
+![Hibernate](https://img.shields.io/badge/Hibernate-ORM-59666C?logo=hibernate&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-4169E1?logo=postgresql&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Containerization-2496ED?logo=docker&logoColor=white)
+![Docker Compose](https://img.shields.io/badge/Docker%20Compose-Orchestration-2496ED?logo=docker&logoColor=white)
+![Vercel](https://img.shields.io/badge/Vercel-Deployment-000000?logo=vercel&logoColor=white)
 
 # EduAdvice
 
@@ -14,6 +21,11 @@
 EduAdvice est un projet universitaire visant à centraliser et organiser
 les informations relatives aux formations universitaires afin de faciliter
 leur consultation par les étudiants et les futurs candidats.
+
+## Accès à l'application
+L'application est accessible en ligne à l'adresse suivante :
+
+[**EduAdvice - Application web**](https://eduadvice.vercel.app/)
 
 ## Objectifs
 

@@ -52,16 +52,57 @@ backend/
 │   │   ├── java/
 │   │   │   └── com/eduadvice/backend/
 │   │   │       ├── BackendApplication.java
-│   │   │       └── controller/
-│   │   │           └── HealthController.java
+│   │   │       ├── controller/
+│   │   │       │    └── ParcoursController.java
+│   │   │       │    └── SemesterController.java
+│   │   │       │    └── TeachingUnitController.java
+│   │   │       │    └── SubjectController.java
+│   │   │       │    └── LearningRessourceController.java
+│   │   │       │    └── CareerOpportunityController.java
+│   │   │       ├── service/
+│   │   │       │    └── ParcoursService.java
+│   │   │       │    └── SemesterService.java
+│   │   │       │    └── TeachingUnitService.java
+│   │   │       │    └── SubjectsService.java
+│   │   │       │    └── LearningRessourcesService.java
+│   │   │       │    └── CareerOpportunitiesService.java
+│   │   │       ├── repository/
+│   │   │       │    └── ParcoursRepository.java
+│   │   │       │    └── SemestersRepository.java
+│   │   │       │    └── TeachingUnitRepository.java
+│   │   │       │    └── SubjectRepository.java
+│   │   │       │    └── LearningRessourceRepository.java
+│   │   │       │    └── CareerOpportunityRepository.java
+│   │   │       ├── entity/
+│   │   │       │    └── Parcours.java
+│   │   │       │    └── Semester.java
+│   │   │       │    └── TeachingUnit.java
+│   │   │       │    └── Subject.java
+│   │   │       │    └── LearningRessource.java
+│   │   │       │    └── CareerOpportunity.java
+│   │   │       ├── dto/
+│   │   │       ├── exception/
+│   │   │       └── config/
 │   │   └── resources/
 │   │       └── application.yml
 │   └── test/
 │       └── java/
 │           └── com/eduadvice/backend/
 │               ├── BackendApplicationTests.java
-│               └── controller/
-│                   └── HealthControllerTests.java
+│               ├── controller/
+│               │    └── ParcoursControllerTest.java
+│               │    └── SemesterControllerTest.java
+│               │    └── TeachingUnitControllerTest.java
+│               │    └── SubjectControllerTest.java
+│               │    └── LearningRessourceControllerTest.java
+│               │    └── CareerOpportunityControllerTest.java
+│               └── service/
+│                    └── ParcoursServiceTest.java
+│                    └── SemesterServiceTest.java
+│                    └── TeachingUnitServiceTest.java
+│                    └── SubjectServiceTest.java
+│                    └── LearningRessourceServiceTest.java
+│                    └── CareerOpportunityServiceTest.java
 ├── .gitignore
 ├── mvnw
 ├── mvnw.cmd

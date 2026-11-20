@@ -1,4 +1,4 @@
-# Architecture générale du système — EduAdvice
+# Architecture générale du système - EduAdvice
 
 ## 1. Présentation
 
@@ -20,7 +20,7 @@ Le backend suit une architecture monolithique : les fonctionnalités métier son
 
 ```text
 +-----------------------------+
-|           Utilisateur       |
+|          Utilisateur        |
 |        Navigateur web       |
 +--------------+--------------+
                |
@@ -32,7 +32,7 @@ Le backend suit une architecture monolithique : les fonctionnalités métier son
 | - Pages et composants       |
 | - Navigation                |
 | - Affichage des données     |
-| - Appels à l'API             |
+| - Appels à l'API            |
 +--------------+--------------+
                |
                | Requêtes HTTP
@@ -40,7 +40,7 @@ Le backend suit une architecture monolithique : les fonctionnalités métier son
                v
 +-----------------------------+
 |           Backend           |
-|       Java / Spring Boot     |
+|      Java / Spring Boot     |
 |                             |
 | - API REST                  |
 | - Logique métier            |
@@ -51,8 +51,8 @@ Le backend suit une architecture monolithique : les fonctionnalités métier son
                | Requêtes SQL
                v
 +-----------------------------+
-|          Base de données    |
-|          PostgreSQL         |
+|       Base de données       |
+|         PostgreSQL          |
 |                             |
 | - Formations                |
 | - Parcours                  |
@@ -79,7 +79,7 @@ Le frontend ne communique pas directement avec la base de données. Toutes les o
 
 ## 5. Responsabilités des composants
 
-### 5.1 Frontend — React
+### 5.1 Frontend - React
 
 Le frontend est responsable de :
 
@@ -89,7 +89,7 @@ Le frontend est responsable de :
 - Communiquer avec le backend à travers l'API REST.
 - Gérer les états et les interactions de l'interface.
 
-### 5.2 Backend — Java / Spring Boot
+### 5.2 Backend - Java / Spring Boot
 
 Le backend est responsable de :
 
@@ -100,7 +100,7 @@ Le backend est responsable de :
 - Communiquer avec la base de données.
 - Retourner les résultats au frontend.
 
-### 5.3 Base de données — PostgreSQL
+### 5.3 Base de données - PostgreSQL
 
 La base de données assure le stockage persistant des informations de l'application, notamment :
 

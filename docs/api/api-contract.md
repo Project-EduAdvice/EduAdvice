@@ -2,9 +2,9 @@
 
 ## 1. Présentation
 
-Le backend d'EduAdvice expose une API REST permettant au frontend de consulter les informations relatives aux formations universitaires.
+Le backend d'EduAdvice expose une API REST permettant au frontend de consulter les informations relatives aux formations universitaires, aux parcours, aux semestres, aux unités d'enseignement (UE), aux matières, aux ressources pédagogiques et aux débouchés professionnels.
 
-Les échanges entre les deux applications reposent sur le protocole HTTP. Les données sont transmises au format JSON.
+Les échanges entre le frontend et le backend reposent sur le protocole HTTP. Les données sont transmises au format JSON (`application/json`).
 
 ## 2. Conventions générales
 
@@ -17,20 +17,43 @@ Les échanges entre les deux applications reposent sur le protocole HTTP. Les do
 
 ## 3. Endpoints
 
-Les endpoints ci-dessous constituent une première proposition du contrat. Ils seront ajustés au cours de l'implémentation.
+### 3.1. Accès aux ressources principales
 
-| Méthode | Endpoint | Description |
+Chaque entité dispose de deux endpoints permettant de consulter l'ensemble de ses éléments ou un élément précis.
+
+|Méthode|Endpoint|Description|
 |---|---|---|
-| GET | `/api/establishments` | Consulter les établissements |
-| GET | `/api/diplomas` | Consulter les diplômes |
-| GET | `/api/parcours` | Consulter les parcours |
-| GET | `/api/parcours/{id}` | Consulter les détails d'un parcours |
-| GET | `/api/parcours/{id}/semesters` | Consulter les semestres d'un parcours |
-| GET | `/api/semesters/{id}/teaching-units` | Consulter les UE d'un semestre |
-| GET | `/api/teaching-units/{id}/subjects` | Consulter les matières d'une UE |
-| GET | `/api/subjects/{id}` | Consulter les détails d'une matière |
-| GET | `/api/subjects/{id}/resources` | Consulter les ressources d'une matière |
-| GET | `/api/parcours/{id}/careers` | Consulter les débouchés d'un parcours |
+|GET|`/api/parcours`|Récupérer tous les parcours|
+|GET|`/api/parcours/{id}`|Récupérer un parcours par son identifiant|
+|GET|`/api/semesters`|Récupérer tous les semestres|
+|GET|`/api/semesters/{id}`|Récupérer un semestre par son identifiant|
+|GET|`/api/teaching-units`|Récupérer toutes les unités d'enseignement|
+|GET|`/api/teaching-units/{id}`|Récupérer une unité d'enseignement par son identifiant|
+|GET|`/api/subjects`|Récupérer toutes les matières|
+|GET|`/api/subjects/{id}`|Récupérer une matière par son identifiant|
+|GET|`/api/learning-resources`|Récupérer toutes les ressources pédagogiques|
+|GET|`/api/learning-resources/{id}`|Récupérer une ressource pédagogique par son identifiant|
+|GET|`/api/career-opportunities`|Récupérer tous les débouchés professionnels|
+|GET|`/api/career-opportunities/{id}`|Récupérer un débouché professionnel par son identifiant|
+
+### 3.2. Navigation entre les entités
+
+L'API permet également de naviguer entre les entités en utilisant des endpoints relationnels.
+
+Ces endpoints permettent de remonter vers une entité parente ou de descendre vers les entités qui lui sont associées.
+
+| Méthode | Endpoint                                  | Description                                         |
+| ------- | ----------------------------------------- | --------------------------------------------------- |
+| GET     | `/api/parcours/{id}/semesters`            | Récupérer les semestres d'un parcours               |
+| GET     | `/api/parcours/{id}/career-opportunities` | Récupérer les débouchés associés à un parcours      |
+| GET     | `/api/career-opportunities/{id}/parcours` | Récupérer les parcours associés à un débouché       |
+| GET     | `/api/semesters/{id}/teaching-units`      | Récupérer les UE d'un semestre                      |
+| GET     | `/api/semesters/{id}/parcours`            | Récupérer le parcours auquel appartient un semestre |
+| GET     | `/api/teaching-units/{id}/semester`       | Récupérer le semestre auquel appartient une UE      |
+| GET     | `/api/teaching-units/{id}/subjects`       | Récupérer les matières d'une UE                     |
+| GET     | `/api/subjects/{id}/teaching-unit`        | Récupérer l'UE à laquelle appartient une matière    |
+| GET     | `/api/subjects/{id}/learning-resources`   | Récupérer les ressources pédagogiques d'une matière |
+| GET     | `/api/learning-resources/{id}/subject`    | Récupérer la matière associée à une ressource       |
 
 ## 4. Format des réponses
 
@@ -40,14 +63,36 @@ Exemple de réponse pour la consultation d'une matière :
 
 ```json
 {
-  "id": 1,
-  "code": "INF101",
-  "name": "Algorithmique",
-  "description": "Introduction aux concepts fondamentaux de l'algorithmique."
+	"id":1,
+	"teachingUnitId":1,
+	"name":"Apprentissage statistique",
+	"description":"Étude des méthodes statistiques permettant aux systèmes informatiques d'apprendre à partir de données.",
+	"content":"Apprentissage supervisé, régression, classification, estimation, généralisation et évaluation des modèles.",
+	"ects":3.0
 }
 ```
+Exemple de réponse pour la consultation des matières d'une unité d'enseignement :
 
-Les propriétés exactes dépendront des données disponibles et des DTO définis lors de l'implémentation.
+```json
+  {
+	  "id":1,
+	  "teachingUnitId":1,
+	  "name":"Apprentissage statistique",
+	  "description":"Étude des méthodes statistiques permettant aux systèmes informatiques d'apprendre à partir de données.",
+	  "content":"Apprentissage supervisé, régression, classification, estimation, généralisation et évaluation des modèles.",
+	  "ects":3.0
+	},
+
+	{
+		"id":2,
+		"teachingUnitId":1,
+		"name":"Deep Learning",
+		"description":"Étude des réseaux de neurones profonds utilisés pour apprendre des représentations complexes à partir de données.",
+		"content":"Réseaux de neurones, rétropropagation, fonctions d'activation, optimisation, réseaux convolutifs et architectures profondes.",
+		"ects":3.0
+	}
+```
+Les propriétés exactes des réponses dépendent des DTO définis dans le backend et des informations disponibles dans la base de données.
 
 ## 5. Codes de statut HTTP
 
@@ -68,8 +113,11 @@ Exemple :
 
 ```json
 {
-  "status": 404,
-  "message": "Matière introuvable"
+	"status":404,
+	"error":"Not Found",
+	"message":"Subject not found with id: 99",
+	"path":"/api/subjects/99",
+	"timestamp":"2026-11-20T01:36:25.043635031"
 }
 ```
 
@@ -83,10 +131,10 @@ Toute modification des endpoints ou des formats de données devra être communiq
 
 ## 8. Initialisation et gestion des données
 
-Les données initiales de l'application seront intégrées directement dans la base de données PostgreSQL par l'équipe de développement.
+Les données initiales de l'application sont intégrées directement dans la base de données PostgreSQL par l'équipe de développement.
 
-Cette intégration pourra être réalisée à l'aide de scripts SQL ou de mécanismes d'importation adaptés.
+L'initialisation est réalisée à l'aide de mécanismes de peuplement des données (_Data Seeding_), permettant de créer les parcours, les semestres, les unités d'enseignement, les matières, les ressources pédagogiques et les débouchés professionnels nécessaires au fonctionnement de l'application.
 
-Dans le périmètre du MVP, l'API est principalement destinée à la consultation des informations. La création, la modification et la suppression des données ne sont pas accessibles depuis l'interface utilisateur.
+Dans le périmètre du MVP, l'API est principalement destinée à la consultation des informations.
 
-La gestion des données sera assurée au niveau de la base de données pendant cette première version.
+La création, la modification et la suppression des données ne sont pas accessibles depuis l'interface utilisateur. La gestion des données initiales reste sous la responsabilité de l'équipe de développement.
